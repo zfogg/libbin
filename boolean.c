@@ -5,6 +5,9 @@ bool binEQZero(bin x) {
       return FALSE;
   return TRUE;
 }
+bool binEQOne(bin x) {
+  return binEQZero(binSubtract(x, binNew(1)));
+}
 
 bool binEQ(bin x, bin y) {
   return binEQZero(binSubtract(x, y));
@@ -13,6 +16,8 @@ bool binEQ(bin x, bin y) {
 
 bool binGT(bin x, bin y) {
   if (binEQ(x, y))
+    return FALSE;
+  if (binEQZero(x) && !binEQZero(y))
     return FALSE;
 
   bin msb;
@@ -36,8 +41,13 @@ bool binGT(bin x, bin y) {
 }
 
 bool binLT(bin x, bin y) {
-  if (!binEQZero(y))
+  if (binEQ(x, y))
+    return FALSE;
+  if (!binEQZero(y)) {
+    if (binEQOne(x))
+      return FALSE;
     y = binSubtract(y, binNew(1));
+  }
   return !binGT(x, y);
 }
 

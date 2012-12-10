@@ -6,6 +6,7 @@ typedef BIN_INT bool;
 
 
 bool binEQZero(bin x);
+bool binEQOne(bin x);
 bool binEQ(bin x, bin y);
 
 bool binGT(bin x, bin y);

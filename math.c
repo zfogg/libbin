@@ -20,8 +20,16 @@ bin binAdd(bin x, bin y) {
   return r;
 }
 
+bin binPlusOne(bin x) {
+  return binAdd(x, binNew(1));
+}
+
 bin binSubtract(bin x, bin y) {
   return binAdd(x, binAdd(binNOT(y), binNew(1)));
+}
+
+bin binMinusOne(bin x) {
+  return binSubtract(x, binNew(1));
 }
 
 
