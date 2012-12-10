@@ -13,8 +13,5 @@
 
 
 int main(int argc, char* argv[]) {
-
-  printf("\n%d\n", binLTEQ(binNew(2), binNew(1)));
-
   return 0;
 }
