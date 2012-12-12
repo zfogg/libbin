@@ -4,6 +4,11 @@ typedef BIN_INT bool;
 #define TRUE  0x01
 #define FALSE 0x00
 
+#define boolToString(b) ((b) ? "TRUE" : "FALSE")
+
+#define binMin(a,b) (binLT((a),(b)) ? (a) : (b))
+#define binMax(a,b) (binGT((a),(b)) ? (a) : (b))
+
 
 bool binEQZero(bin x);
 bool binEQOne(bin x);

@@ -20,33 +20,51 @@ bin binAdd(bin x, bin y) {
   return r;
 }
 
-bin binPlusOne(bin x) {
+bin binIncrement(bin x) {
   return binAdd(x, binNew(1));
 }
 
 bin binSubtract(bin x, bin y) {
-  return binAdd(x, binAdd(binNOT(y), binNew(1)));
+  return binAdd(x, binIncrement(binNOT(y)));
 }
 
-bin binMinusOne(bin x) {
+bin binDecrement(bin x) {
   return binSubtract(x, binNew(1));
 }
 
 
 bin binMultiply(bin x, bin y) {
-  if (binEQ(y, binNew(1)))
+  if (binEQZero(y))
+    return binNew(0);
+  else if (binEQOne(y))
     return x;
-  return binAdd(x, binMultiply(x, binSubtract(y, binNew(1))));
+  return binAdd(x, binMultiply(x, binDecrement(y)));
 }
 
 bin binDivide(bin x, bin y) {
-  //FIXME: implement this.
-  return binNew(0);
+  if (binLT(x, y))
+    return binNew(0);
+
+  bin xMinusY = binSubtract(x, y),
+      xMY_MSB = binMSBi(xMinusY);
+
+  if (binEQZero(xMinusY))
+    return binNew(1);
+  else if (binGT(xMY_MSB, binMSBi(x)) || binGT(xMY_MSB, binMSBi(y)))
+    return binNew(0);
+  else
+    return binAdd(binNew(1), binDivide(xMinusY, y));
+}
+
+bin binModulus(bin x, bin y) {
+  if (binLT(x, y))
+    return x;
+  return binSubtract(x, binMultiply(y, binDivide(x, y)));
 }
 
 
 bin binPow(bin x, bin y) {
   if (binEQZero(y))
     return binNew(1);
-  return binMultiply(x, binPow(x, binSubtract(y, binNew(1))));
+  return binMultiply(x, binPow(x, binDecrement(y)));
 }

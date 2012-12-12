@@ -6,7 +6,7 @@ bool binEQZero(bin x) {
   return TRUE;
 }
 bool binEQOne(bin x) {
-  return binEQZero(binSubtract(x, binNew(1)));
+  return binEQZero(binDecrement(x));
 }
 
 bool binEQ(bin x, bin y) {
@@ -17,36 +17,30 @@ bool binEQ(bin x, bin y) {
 bool binGT(bin x, bin y) {
   if (binEQ(x, y))
     return FALSE;
-  if (binEQZero(x) && !binEQZero(y))
-    return FALSE;
+  else if (binEQZero(x) || binEQZero(y))
+    return binEQZero(y);
 
-  bin msb;
-  int i;
-  for (i = 0; i < BIN_BITS; i++)
-    if (x.bits[i] || y.bits[i])
-      msb = binNew(i+1);
+  bin msbi = binMSBi(binMSB(binOR(binMSB(x), binMSB(y))));
 
-  x = binShiftL(x, binSubtract(binNew(BIN_BITS), msb));
-  y = binShiftL(y, binSubtract(binNew(BIN_BITS), msb));
+  x = binShiftL(x, binSubtract(binNew(BIN_BITS), msbi));
+  y = binShiftL(y, binSubtract(binNew(BIN_BITS), msbi));
 
-  if (x.bits[BIN_BITS-1] && !y.bits[BIN_BITS-1]) {
+  if (x.bits[BIN_BITS-1] && !y.bits[BIN_BITS-1])
     return TRUE;
-  } else if (!x.bits[BIN_BITS-1] && y.bits[BIN_BITS-1]) {
+  else if (!x.bits[BIN_BITS-1] && y.bits[BIN_BITS-1])
     return FALSE;
-  } else {
-    x.bits[BIN_BITS-1] = 0;
-    y.bits[BIN_BITS-1] = 0;
-    return binGT(x, y);
-  }
+  else
+    return binGT(binShiftL1(x), binShiftL1(y));
 }
 
 bool binLT(bin x, bin y) {
-  if (binEQ(x, y))
+  if (binEQ(x, y)) {
     return FALSE;
-  if (!binEQZero(y)) {
-    if (binEQOne(x))
+  } else if (!binEQZero(y)) {
+    if (binEQOne(x)) {
       return FALSE;
-    y = binSubtract(y, binNew(1));
+    }
+    y = binDecrement(y);
   }
   return !binGT(x, y);
 }
