@@ -20,7 +20,7 @@ bool binGT(bin x, bin y) {
   else if (binEQZero(x) || binEQZero(y))
     return binEQZero(y);
 
-  bin msbi = binMSBi(binMSB(binOR(binMSB(x), binMSB(y))));
+  bin msbi = binMSBi(binOR(x, y));
 
   x = binShiftL(x, binSubtract(binNew(BIN_BITS), msbi));
   y = binShiftL(y, binSubtract(binNew(BIN_BITS), msbi));

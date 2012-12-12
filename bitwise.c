@@ -2,12 +2,10 @@
 
 
 bin binMSBi(bin x) {
-  bin r;
-  int i;
-  for (i = 0; i < BIN_BITS; i++)
-    if (x.bits[i])
-      r = binIncrement(binNew(i));
-  return r;
+  int i = BIN_BITS-1;
+  while (!x.bits[i] && i > 0)
+    i--;
+  return binIncrement(binNew(i));
 }
 bin binMSB(bin x) {
   if (binEQZero(x))
