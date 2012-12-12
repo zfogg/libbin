@@ -11,7 +11,7 @@ Implement operators from the following categories:
 ## Rules and Restrictions
 The only operators allowed are &&, ||, and !.
 
-To implement logic, check bit truthiness and/or use functions that do the same.
+To implement logic, check bit truthiness and/or use functions that do the same.  
 *For example, one could recursively implement multiplication as repeated addition.*
 
 Use only the binary type 'bin'. Do not convert between bases.
