@@ -1,5 +1,5 @@
 # Binary Math
-Defitions of numerical operations.
+Definitions and implementations of bitwise, numerical, and logical operations.
 
 ## Objectives
 Implement operators from the following categories:
