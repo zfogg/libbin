@@ -34,14 +34,8 @@ bool binGT(bin x, bin y) {
 }
 
 bool binLT(bin x, bin y) {
-  if (binEQ(x, y)) {
+  if (binEQ(x, y))
     return FALSE;
-  } else if (!binEQZero(y)) {
-    if (binEQOne(x)) {
-      return FALSE;
-    }
-    y = binDecrement(y);
-  }
   return !binGT(x, y);
 }
 

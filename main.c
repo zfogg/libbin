@@ -1,10 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "bin.h"
-#include "math.h"
-#include "bitwise.h"
-#include "boolean.h"
+#include "architectures/16.c"
+
+#include "main.h"
 
 #include "bin.c"
 #include "math.c"

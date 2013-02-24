@@ -1,6 +1,3 @@
-#include <stdlib.h>
-
-
 bin binMSBi(bin x) {
   int i = BIN_BITS-1;
   while (!x.bits[i] && i > 0)
