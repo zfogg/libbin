@@ -5,10 +5,10 @@
 
 #include "main.h"
 
-#include "bin.c"
-#include "math.c"
-#include "bitwise.c"
-#include "boolean.c"
+#include "bin/bin.c"
+#include "math/math.c"
+#include "bitwise/bitwise.c"
+#include "boolean/boolean.c"
 
 
 int main(int argc, char* argv[]) {

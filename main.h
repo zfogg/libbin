@@ -1,3 +1,3 @@
-#include "math.h"
-#include "bitwise.h"
-#include "boolean.h"
+#include "math/math.h"
+#include "bitwise/bitwise.h"
+#include "boolean/boolean.h"
