@@ -6,13 +6,13 @@ bin binMSBi(bin x) {
 }
 bin binMSB(bin x) {
   if (binEQZero(x))
-    return binNew(0);
-  return binShiftL(binNew(1), binDecrement(binMSBi(x)));
+    return binZERO;
+  return binShiftL(binONE, binDecrement(binMSBi(x)));
 }
 
 
 bin binNOT(bin x) {
-  bin r = binNew(0);
+  bin r = binZERO;
   int i;
   for (i = 0; i < BIN_BITS; i++) {
     r.bits[i] = !x.bits[i];
@@ -26,7 +26,7 @@ bin binShiftL(bin x, bin y) {
 }
 
 bin binShiftL1(bin x) {
-  return binShiftL(x, binNew(1));
+  return binShiftL(x, binONE);
 }
 
 bin binShiftOutZerosL(bin x) {
@@ -37,7 +37,7 @@ bin binShiftR(bin x, bin y) {
   if (binEQZero(y))
     return x;
 
-  bin r = binNew(0);
+  bin r = binZERO;
   int i;
   for (i = BIN_BITS-1; i > 0; i--)
     r.bits[i-1] = x.bits[i];
@@ -46,19 +46,19 @@ bin binShiftR(bin x, bin y) {
 }
 
 bin binShiftR1(bin x) {
-  return binShiftR(x, binNew(1));
+  return binShiftR(x, binONE);
 }
 
 bin binShiftOutZerosR(bin x) {
   if (binEQZero(x))
-    return binNew(0);
+    return binZERO;
   return binShiftR(x, binDecrement(binMSBi(x)));
 }
 
 
 bin binAND(bin x, bin y) {
   int i;
-  bin r = binNew(0);
+  bin r = binZERO;
   for (i = 0; i < BIN_BITS; i++)
     if (x.bits[i] && y.bits[i])
       r.bits[i] = 1;
@@ -67,7 +67,7 @@ bin binAND(bin x, bin y) {
 
 bin binOR(bin x, bin y) {
   int i;
-  bin r = binNew(0);
+  bin r = binZERO;
   for (i = 0; i < BIN_BITS; i++)
     if (x.bits[i] || y.bits[i])
       r.bits[i] = 1;
@@ -76,7 +76,7 @@ bin binOR(bin x, bin y) {
 
 bin binXOR(bin x, bin y) {
   int i;
-  bin r = binNew(0);
+  bin r = binZERO;
   for (i = 0; i < BIN_BITS; i++)
     if ((x.bits[i] || y.bits[i])
     && !(x.bits[i] && y.bits[i]))

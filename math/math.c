@@ -3,7 +3,7 @@
 
 bin binAdd(bin x, bin y) {
   int i, carry;
-  bin r = binNew(0);
+  bin r = binZERO;
   for (i = 0, carry = 0; i < BIN_BITS; i++) {
     if (!carry && ((x.bits[i] && !y.bits[i])
                 || (!x.bits[i] && y.bits[i]))) {
@@ -21,7 +21,7 @@ bin binAdd(bin x, bin y) {
 }
 
 bin binIncrement(bin x) {
-  return binAdd(x, binNew(1));
+  return binAdd(x, binONE);
 }
 
 bin binSubtract(bin x, bin y) {
@@ -29,13 +29,13 @@ bin binSubtract(bin x, bin y) {
 }
 
 bin binDecrement(bin x) {
-  return binSubtract(x, binNew(1));
+  return binSubtract(x, binONE);
 }
 
 
 bin binMultiply(bin x, bin y) {
   if (binEQZero(y))
-    return binNew(0);
+    return binZERO;
   else if (binEQOne(y))
     return x;
   return binAdd(x, binMultiply(x, binDecrement(y)));
@@ -43,17 +43,17 @@ bin binMultiply(bin x, bin y) {
 
 bin binDivide(bin x, bin y) {
   if (binLT(x, y))
-    return binNew(0);
+    return binZERO;
 
   bin xMinusY = binSubtract(x, y),
       xMY_MSB = binMSBi(xMinusY);
 
   if (binEQZero(xMinusY))
-    return binNew(1);
+    return binONE;
   else if (binGT(xMY_MSB, binMSBi(x)) || binGT(xMY_MSB, binMSBi(y)))
-    return binNew(0);
+    return binZERO;
   else
-    return binAdd(binNew(1), binDivide(xMinusY, y));
+    return binAdd(binONE, binDivide(xMinusY, y));
 }
 
 bin binModulus(bin x, bin y) {
@@ -65,6 +65,6 @@ bin binModulus(bin x, bin y) {
 
 bin binPow(bin x, bin y) {
   if (binEQZero(y))
-    return binNew(1);
+    return binONE;
   return binMultiply(x, binPow(x, binDecrement(y)));
 }
