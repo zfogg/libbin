@@ -42,18 +42,31 @@ bin binMultiply(bin x, bin y) {
 }
 
 bin binDivide(bin x, bin y) {
-  if (binLT(x, y))
+  if (binEQZero(y)) {
+    printf("Division by zero is undefined.\n");
+    exit(1);
+  }
+
+  if (binEQZero(x))
     return binZERO;
-
-  bin xMinusY = binSubtract(x, y),
-      xMY_MSB = binMSBi(xMinusY);
-
-  if (binEQZero(xMinusY))
+  else if (binEQZero(binSubtract(x, y)))
     return binONE;
-  else if (binGT(xMY_MSB, binMSBi(x)) || binGT(xMY_MSB, binMSBi(y)))
-    return binZERO;
-  else
-    return binAdd(binONE, binDivide(xMinusY, y));
+
+  bin q = binZERO,
+      r = binZERO;
+
+  int i;
+  for (i = BIN_BITS-1; i >= 0; i--) {
+    r = binShiftL1(r);
+    r.bits[0] = x.bits[i];
+
+    if (binGTEQ(r, y)) {
+      r = binSubtract(r, y);
+      q.bits[i] = 1;
+    }
+  }
+
+  return q;
 }
 
 bin binModulus(bin x, bin y) {
