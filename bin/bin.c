@@ -11,7 +11,7 @@ bin binNew(BIN_INT n) {
 }
 
 BIN_INT binToInt(bin x) {
-  int i, r;
+  int i, r = 0;
   for (i = 0; i < BIN_BITS; i++) {
     r |= x.bits[i] << i;
   }
