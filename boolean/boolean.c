@@ -1,10 +1,16 @@
+#include "boolean.h"
+#include "../bin/bin.h"
+#include "../math/math.h"
+#include "../bitwise/bitwise.h"
+
+
 bool binEQZero(bin x) {
-  int i;
-  for (i = 0; i < BIN_BITS; i++)
+  for (int i = 0; i < BIN_BITS; i++)
     if (x.bits[i])
       return FALSE;
   return TRUE;
 }
+
 bool binEQOne(bin x) {
   return binEQZero(binDecrement(x));
 }
@@ -15,28 +21,14 @@ bool binEQ(bin x, bin y) {
 
 
 bool binGT(bin x, bin y) {
-  if (binEQ(x, y))
-    return FALSE;
-  else if (binEQZero(x) || binEQZero(y))
-    return binEQZero(y);
-
-  bin msbi = binMSBi(binOR(x, y));
-
-  x = binShiftL(x, binSubtract(binNew(BIN_BITS), msbi));
-  y = binShiftL(y, binSubtract(binNew(BIN_BITS), msbi));
-
-  if (x.bits[BIN_BITS-1] && !y.bits[BIN_BITS-1])
-    return TRUE;
-  else if (!x.bits[BIN_BITS-1] && y.bits[BIN_BITS-1])
-    return FALSE;
-  else
-    return binGT(binShiftL1(x), binShiftL1(y));
+  for (int i = BIN_BITS-1; i >= 0; i--)
+    if (binXOR(x, y).bits[i])
+      return x.bits[i] && !y.bits[i];
+  return FALSE;
 }
 
 bool binLT(bin x, bin y) {
-  if (binEQ(x, y))
-    return FALSE;
-  return !binGT(x, y);
+  return !binEQ(x, y) && !binGT(x, y);
 }
 
 

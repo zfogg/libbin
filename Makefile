@@ -1,12 +1,9 @@
 all:
-	gcc -Wall -O3 "main.c" -o main
+	clang -std=c99 -Wall -O3 "main.c" -o main
 
-run: main
-	./main
-
-clean: main
+clean:
 	rm main
 
-recompile: main
+recompile:
 	make clean
 	make

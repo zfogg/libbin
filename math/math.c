@@ -1,4 +1,10 @@
 #include <stdlib.h>
+#include <stdio.h>
+#include "../architectures/16.c"
+#include "../bin/bin.h"
+#include "../math/math.h"
+#include "../bitwise/bitwise.h"
+#include "../boolean/boolean.h"
 
 
 bin binAdd(bin x, bin y) {

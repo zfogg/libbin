@@ -1,3 +1,6 @@
+#include "../bin/bin.h"
+
+
 bin binMSBi(bin x);
 bin binMSB(bin x);
 

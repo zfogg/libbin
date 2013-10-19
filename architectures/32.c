@@ -1,5 +1,9 @@
 #include "32.h"
+#include "../bin/bin.h"
 
+
+#ifndef BIN_CONSTS
+#define BIN_CONSTS
 
 static const bin binZERO = {
   .bits = {
@@ -48,3 +52,5 @@ static const bin binMAX = {
     1, 1, 1, 1
   }
 };
+
+#endif

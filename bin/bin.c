@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "bin.h"
+
 
 bin binNew(BIN_INT n) {
   bin b;

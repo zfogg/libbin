@@ -1,4 +1,12 @@
+#include "../bin/bin.h"
+
+
+#ifndef BOOL_T
+#define BOOL_T
+
 typedef BIN_INT bool;
+
+#endif
 
 
 #define TRUE  0x01
