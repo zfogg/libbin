@@ -1,5 +1,18 @@
-# Binary Math
+# libbin
 Definitions and implementations of bitwise, numerical, and logical operations.
+
+## Rules and Restrictions
+The only operators allowed from the C language are `&&`, `||`, and `!`.
+
+To implement logic, check bit truthiness and/or use functions that do the same.  
+
+Use only the type `bin` as defined in `./src/bin.h`.
+
+You may not convert between bases.
+
+### Exceptions
+* Minor exceptions to these rules will be allowed to create simple loops.
+* You may use + and - to adjust for array indexing.
 
 ## Objectives
 Implement operators from the following categories:
@@ -30,15 +43,3 @@ Implement operators from the following categories:
     * Conjuction
     * Disjunction
 
-## Rules and Restrictions
-The only operators allowed from the C language are &&, ||, and !.
-
-To implement logic, check bit truthiness and/or use functions that do the same.  
-
-Use only the binary type 'bin', which is defined in bin.h.
-
-Do not convert between bases.
-
-### Exceptions
-* Exceptions to these rules are provided for creating simple loops.
-* You may use + and - to adjust for array indexing.

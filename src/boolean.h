@@ -1,4 +1,4 @@
-#include "../bin/bin.h"
+#include "bin.h"
 
 
 #ifndef BOOL_T

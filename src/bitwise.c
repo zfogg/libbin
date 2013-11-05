@@ -1,8 +1,8 @@
-#include "../bin/bin.h"
-#include "../math/math.h"
-#include "../bitwise/bitwise.h"
-#include "../boolean/boolean.h"
-#include "../architectures/16.c"
+#include "bin.h"
+#include "math.h"
+#include "bitwise.h"
+#include "boolean.h"
+#include "16.c"
 
 
 bin binMSBi(bin x) {
@@ -21,9 +21,8 @@ bin binMSB(bin x) {
 
 bin binNOT(bin x) {
   bin r = binZERO;
-  for (int i = 0; i < BIN_BITS; i++) {
+  for (int i = 0; i < BIN_BITS; i++)
     r.bits[i] = !x.bits[i];
-  }
   return r;
 }
 
@@ -45,8 +44,7 @@ bin binShiftR(bin x, bin y) {
     return x;
 
   bin r = binZERO;
-  int i;
-  for (i = BIN_BITS-1; i > 0; i--)
+  for (int i = BIN_BITS-1; i > 0; i--)
     r.bits[i-1] = x.bits[i];
 
   return binShiftR(r, binDecrement(y));

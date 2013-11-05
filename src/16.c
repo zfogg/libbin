@@ -1,5 +1,5 @@
 #include "16.h"
-#include "../bin/bin.h"
+#include "bin.h"
 
 
 #ifndef BIN_CONSTS

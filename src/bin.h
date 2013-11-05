@@ -1,4 +1,4 @@
-#include "../architectures/16.h"
+#include "16.h"
 
 
 #define WHITE_CC "\e[0m"

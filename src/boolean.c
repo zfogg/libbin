@@ -1,7 +1,7 @@
 #include "boolean.h"
-#include "../bin/bin.h"
-#include "../math/math.h"
-#include "../bitwise/bitwise.h"
+#include "bin.h"
+#include "math.h"
+#include "bitwise.h"
 
 
 bool binEQZero(bin x) {

@@ -1,16 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../architectures/16.c"
-#include "../bin/bin.h"
-#include "../math/math.h"
-#include "../bitwise/bitwise.h"
-#include "../boolean/boolean.h"
+#include "16.c"
+#include "bin.h"
+#include "math.h"
+#include "bitwise.h"
+#include "boolean.h"
 
 
 bin binAdd(bin x, bin y) {
-  int i, carry;
   bin r = binZERO;
-  for (i = 0, carry = 0; i < BIN_BITS; i++) {
+  for (int i = 0, carry = 0; i < BIN_BITS; i++) {
     if (!carry && ((x.bits[i] && !y.bits[i])
                 || (!x.bits[i] && y.bits[i]))) {
       r.bits[i] = 1;
