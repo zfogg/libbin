@@ -31,14 +31,10 @@ default: $(TARGET)
 all: default
 
 clean:
-	-rm -rf tags
 	-rm -rf $(OUT_D)/* $(BIN_D)/*
 
 test: $(TESTS)
 	$(TESTS)
-
-tags:
-	ctags -R --sort=yes .
 
 
 $(OBJECTS): $(OUT_D)/%.o: $(SRC_D)/%.c
