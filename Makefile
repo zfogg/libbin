@@ -7,16 +7,25 @@ OUT_D = build
 
 BIN_D = bin
 
+TEST_D = test
+
 
 CC = clang -std=c99 -Wextra -O2
 
 
+T = bin
+
+
 OBJECTS = $(patsubst $(SRC_D)/%.c, $(OUT_D)/%.o, $(wildcard $(SRC_D)/*.c))
+
+OBJECTS_T = $(patsubst $(TEST_D)/%.c, $(OUT_D)/%.o, $(wildcard $(TEST_D)/*.c))
 
 HEADERS = $(wildcard $(SRC_D)/*.h)
 
+HEADERS_T = $(wildcard $(TEST_D)/*.h)
 
-TARGET = $(OUT_D)/libbin.so
+
+TARGET = $(OUT_D)/lib$(T).so
 
 TESTS = $(BIN_D)/bin_tests
 
@@ -31,17 +40,21 @@ default: $(TARGET)
 all: default
 
 clean:
-	-rm -rf $(OUT_D)/* $(BIN_D)/*
+	rm -rf $(OUT_D)/* $(BIN_D)/*
 
-test: $(TESTS)
-	$(TESTS)
+test: all $(TESTS)
+	./$(TESTS)
 
 
-$(OBJECTS): $(OUT_D)/%.o: $(SRC_D)/%.c
+$(OBJECTS): $(OUT_D)/%.o: $(SRC_D)/%.c $(HEADERS)
 	$(CC) -c -fpic $< -o $@
 
 $(OUT_D)/%.so: $(OBJECTS)
-	$(CC) -shared $(OBJECTS) -o $(OUT_D)/$(*F).so
+	$(CC) -shared $^ -o $@
 
-$(TESTS): all
-	$(CC) ./test/bin_tests.c -o $(TESTS) -L$(OUT_D) -lbin
+
+$(OBJECTS_T): $(OUT_D)/%.o: $(TEST_D)/%.c $(HEADERS_T)
+	$(CC) -c -fpic $< -o $@
+
+$(TESTS): $(OBJECTS_T)
+	$(CC) $^ -o $@ -L$(OUT_D) -l$(T)
