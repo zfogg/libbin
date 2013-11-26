@@ -1,27 +1,27 @@
 #!/bin/make -f
 
 
-SRC_DIR = src
+SRC_D = src
 
-OUT_DIR = build
+OUT_D = build
 
-BIN_DIR = bin
-
-
-CLANG = clang -std=c99 -Wextra -O2
+BIN_D = bin
 
 
-OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
-
-HEADERS = $(wildcard $(SRC_DIR)/*.h)
+CC = clang -std=c99 -Wextra -O2
 
 
-TARGET = $(OUT_DIR)/libbin.so
+OBJECTS = $(patsubst $(SRC_D)/%.c, $(OUT_D)/%.o, $(wildcard $(SRC_D)/*.c))
 
-TESTS = $(BIN_DIR)/bin_tests
+HEADERS = $(wildcard $(SRC_D)/*.h)
 
 
-export LD_LIBRARY_PATH=$(OUT_DIR)
+TARGET = $(OUT_D)/libbin.so
+
+TESTS = $(BIN_D)/bin_tests
+
+
+export LD_LIBRARY_PATH=$(OUT_D)
 
 .PHONY: default all clean
 
@@ -32,7 +32,7 @@ all: default
 
 clean:
 	-rm -rf tags
-	-rm -rf $(OUT_DIR)/* $(BIN_DIR)/*
+	-rm -rf $(OUT_D)/* $(BIN_D)/*
 
 test: $(TESTS)
 	$(TESTS)
@@ -41,11 +41,11 @@ tags:
 	ctags -R --sort=yes .
 
 
-$(OUT_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CLANG) -c -fpic $< -o $@
+$(OBJECTS): $(OUT_D)/%.o: $(SRC_D)/%.c
+	$(CC) -c -fpic $< -o $@
 
-$(OUT_DIR)/%.so: $(OUT_DIR)/%.o
-	$(CLANG) -shared -o $(OUT_DIR)/$(*F).so $<
+$(OUT_D)/%.so: $(OBJECTS)
+	$(CC) -shared $(OBJECTS) -o $(OUT_D)/$(*F).so
 
 $(TESTS): all
-	$(CLANG) ./test/bin_tests.c -o $(TESTS) -L$(OUT_DIR) -lbin
+	$(CC) ./test/bin_tests.c -o $(TESTS) -L$(OUT_D) -lbin

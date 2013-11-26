@@ -1,7 +1,10 @@
 #include <stdio.h>
 
-#include "bin_tests.h"
-#include "../src/libbin.h"
+#include "../src/16.h"
+#include "../src/bin.h"
+#include "../src/bitwise.h"
+#include "../src/boolean.h"
+#include "../src/math.h"
 
 
 int main(int argc, char* argv[]) {
