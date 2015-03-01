@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "16.c"
 #include "bin.h"
 #include "math.h"
 #include "bitwise.h"
@@ -85,3 +84,4 @@ bin binPow(bin x, bin y) {
         return binONE;
     return binMultiply(x, binPow(x, binDecrement(y)));
 }
+

@@ -21,8 +21,9 @@ bool binEQ(bin x, bin y) {
 
 
 bool binGT(bin x, bin y) {
+    bin xorXY = binXOR(x, y);
     for (int i = BIN_BITS-1; i >= 0; i--)
-        if (binXOR(x, y).bits[i])
+        if (xorXY.bits[i])
             return x.bits[i] && !y.bits[i];
     return FALSE;
 }

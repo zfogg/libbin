@@ -12,6 +12,7 @@ int main(int argc, char* argv[]) {
     (void)(argc); (void)(argv);
     srand(time(NULL));
 
+    puts("");
     binMSBi_test            ();
     binMSB_test             ();
     binNOT_test             ();
@@ -25,6 +26,7 @@ int main(int argc, char* argv[]) {
     binOR_test              ();
     binXOR_test             ();
 
+    puts("");
     binAdd_test             ();
     binIncrement_test       ();
     binSubtract_test        ();
@@ -34,6 +36,7 @@ int main(int argc, char* argv[]) {
     binModulus_test         ();
     binPow_test             ();
 
+    puts("");
     binEQZero_test          ();
     binEQOne_test           ();
     binEQ_test              ();

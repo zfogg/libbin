@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../src/bin.h"
 
 #include "../src/boolean.h"

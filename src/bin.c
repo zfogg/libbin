@@ -21,16 +21,14 @@ BIN_INT binToInt(bin x) {
 
 
 void binPrint(bin x) {
-    printf("%s", WHITE_CC);
-    char* color;
-    BIN_INT bit;
     for (int i = 0; i < BIN_BITS; i++) {
-        bit = x.bits[BIN_BITS - 1 - i];
-        color = bit ? GREEN_CC : RED_CC;
-        printf("%s%d%s", color, bit, WHITE_CC);
-        if ((i+1) % 4 == 0)
+        BIN_INT bit = x.bits[BIN_BITS - 1 - i];
+        char* color = bit ? GREEN_CC : RED_CC;
+        printf("%s%d", color, bit);
+        if ((i+1) % 4 == 0) // Print human-parsable chunks.
             printf(" ");
     }
-    printf("\n");
+    puts(WHITE_CC);
+    fflush(stdout);
 }
 
