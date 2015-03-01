@@ -32,13 +32,12 @@ TESTS = $(BIN_D)/bin_tests
 
 export LD_LIBRARY_PATH=$(OUT_D)
 
-.PHONY: default all clean
-
 
 default: $(TARGET)
 
 all: default
 
+.PHONY: clean
 clean:
 	rm -rf $(OUT_D)/* $(BIN_D)/*
 
@@ -58,3 +57,4 @@ $(OBJECTS_T): $(OUT_D)/%.o: $(TEST_D)/%.c $(HEADERS_T)
 
 $(TESTS): $(OBJECTS_T)
 	$(CC) $^ -o $@ -L$(OUT_D) -l$(T)
+
