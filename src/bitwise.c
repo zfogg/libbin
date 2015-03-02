@@ -8,6 +8,13 @@ bin binMSBi(bin x) {
     return binIncrement(binNew(i));
 }
 
+bin binLSBi(bin x) {
+    bin_int_t i = 0;
+    while (!x.bits[i] && i < BIN_BITS-1)
+        i++;
+    return binIncrement(binNew(i));
+}
+
 bin binMSB(bin x) {
     if (binEQZero(x))
         return binZERO;
@@ -53,7 +60,7 @@ bin binShiftR1(bin x) {
 bin binShiftOutZerosR(bin x) {
     if (binEQZero(x))
         return binZERO;
-    return binShiftR(x, binDecrement(binMSBi(x)));
+    return binShiftR(x, binDecrement(binLSBi(x)));
 }
 
 

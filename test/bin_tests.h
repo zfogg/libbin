@@ -8,6 +8,8 @@
 // bitwise
 void binMSBi_test           ();
 
+void binLSBi_test           ();
+
 void binMSB_test            ();
 
 void binNOT_test            ();

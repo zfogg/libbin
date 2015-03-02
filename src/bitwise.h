@@ -9,6 +9,11 @@
 bin binMSBi(bin x);
 
 /*
+ * returns the value of the index of the least significant bit
+ * */
+bin binLSBi(bin x);
+
+/*
  * returns the value of the most significant bit
  * */
 bin binMSB(bin x);

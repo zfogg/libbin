@@ -11,6 +11,7 @@ int main(int argc, char* argv[]) {
 
     puts("");
     binMSBi_test            ();
+    binLSBi_test            ();
     binMSB_test             ();
     binNOT_test             ();
     binShiftL_test          ();
@@ -45,6 +46,6 @@ int main(int argc, char* argv[]) {
     puts("");
     processTestResults("Pass ALL the tests", bin_testResults);
 
-    return 0;
+    return !bin_testResults;
 }
 

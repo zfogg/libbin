@@ -5,10 +5,21 @@ void binMSBi_test() {
     bin_int_t r = 1;
     for (bin_int_t i = 1; i < BIN_BITS-1; ++i) {
         bin b = binNew(1 << i);
-        r &= i+1 == binToInt(binMSBi(b));
+        r &= (i+1) == binToInt(binMSBi(b));
     }
     r &= BIN_BITS == binToInt(binMSBi(binMAX));
     processTestResults("binMSBi", r);
+}
+
+
+void binLSBi_test() {
+    bin_int_t r = 1;
+    for (bin_int_t i = 1; i < BIN_BITS-1; ++i) {
+        bin b = binNew(BIN_INT_MAX >> i);
+        r &= 1 == binToInt(binLSBi(b));
+    }
+    r &= 1 == binToInt(binLSBi(binMAX));
+    processTestResults("binLSBi", r);
 }
 
 
@@ -56,7 +67,15 @@ void binShiftL1_test() {
 
 
 void binShiftOutZerosL_test() {
-    processTestResults("binShiftOutZerosL", 0);
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
+        bin b        = binRand();
+        bin_int_t bi = binToInt(b);
+        while (bi != 0 && !(bi & (1 << (BIN_BITS-1))))
+            bi <<= 1;
+        r &= bi == binToInt(binShiftOutZerosL(b));
+    }
+    processTestResults("binShiftOutZerosL", r);
 }
 
 
@@ -85,7 +104,15 @@ void binShiftR1_test() {
 
 
 void binShiftOutZerosR_test() {
-    processTestResults("binShiftOutZerosR", 0);
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
+        bin b        = binRand();
+        bin_int_t bi = binToInt(b);
+        while (bi != 0 && !(bi & 1))
+            bi >>= 1;
+        r &= bi == binToInt(binShiftOutZerosR(b));
+    }
+    processTestResults("binShiftOutZerosR", r);
 }
 
 
