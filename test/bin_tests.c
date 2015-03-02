@@ -1,12 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <time.h>
 
 #include "bin_tests.h"
-#include "bin_tests_debug.h"
 
 
-int bin_testResults = 1;
+bin_int_t bin_testResults = 1;
 
 int main(int argc, char* argv[]) {
     (void)(argc); (void)(argv);

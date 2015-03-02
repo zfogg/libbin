@@ -1,15 +1,19 @@
 #pragma once
 
+#include <stdint.h>
+#include <inttypes.h>
 
-#define BIN_INT int
-#define BIN_BITS (int)sizeof(BIN_INT)*4
 
+#define BIN_BITS       16
 
-#define RAND(min, max) (rand() % (max+1-min))+min
+#define bin_int_t      uint16_t
+#define BIN_INT_MAX    UINT16_MAX
+
+#define PRINTF_BIN_INT PRIu16
 
 
 typedef struct bin {
-    BIN_INT bits[BIN_BITS];
+    bin_int_t bits[BIN_BITS];
 } bin;
 
 
@@ -19,7 +23,7 @@ static const bin binZERO = {
         0, 0, 0, 0,
 
         0, 0, 0, 0,
-        0, 0, 0, 0
+        0, 0, 0, 0,
     }
 };
 
@@ -29,7 +33,7 @@ static const bin binONE = {
         0, 0, 0, 0,
 
         0, 0, 0, 0,
-        0, 0, 0, 0
+        0, 0, 0, 0,
     }
 };
 
@@ -39,7 +43,7 @@ static const bin binMAX = {
         1, 1, 1, 1,
 
         1, 1, 1, 1,
-        1, 1, 1, 1
+        1, 1, 1, 1,
     }
 };
 

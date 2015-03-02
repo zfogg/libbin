@@ -3,18 +3,13 @@
 #include "bin.h"
 
 
-#ifndef BOOL_T
-#define BOOL_T
-
-typedef BIN_INT bool;
-
-#endif
+typedef bin_int_t bool;
 
 
 #define TRUE  0x01
 #define FALSE 0x00
 
-#define boolToString(b) ((b) ? GREEN_CC"TRUE"WHITE_CC : RED_CC"FALSE"WHITE_CC)
+#define boolToString(b) ((b) ? "TRUE" : "FALSE")
 
 #define binMin(a,b) (binLT((a),(b)) ? (a) : (b))
 #define binMax(a,b) (binGT((a),(b)) ? (a) : (b))

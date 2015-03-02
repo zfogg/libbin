@@ -3,9 +3,11 @@
 #include "../src/bin.h"
 
 
-extern int bin_testResults;
+extern bin_int_t bin_testResults;
 
-void processTestResults(const char* testName, int results);
+void processTestResults(const char* testName, bin_int_t results);
 
-bin randTestVal();
+bin binRandr(bin_int_t min, bin_int_t max);
+
+bin binRand();
 

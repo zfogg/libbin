@@ -1,22 +1,22 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "bin_tests.h"
-#include "bin_tests_debug.h"
 
 
-void processTestResults(const char* testName, int results) {
-    const char* color = results ? GREEN_CC : RED_CC;
-    const char* text  = results ? "pass" : "fail";
-    printf("\tTesting - %-30s: %s%s%s\n", testName, color, text, WHITE_CC);
+void processTestResults(const char* testName, const bin_int_t results) {
     bin_testResults &= results;
+    const char* color  = results ? CC_GREEN : CC_RED;
+    const char* text   = results ? "pass" : "fail";
+    const char* format = "\tTesting - %-30s: %s%s%s\n";
+    printf(format, testName, color, text, CC_RESET);
+    fflush(stdout);
 }
 
 
-bin randTestVal() {
-    bin r;
-    for (int i = 0; i < BIN_BITS; i++)
-        r.bits[i] = rand() % 2;
-    return r;
+bin binRandr(bin_int_t min, bin_int_t max) {
+    return binNew(randr(min, max));
+}
+
+
+bin binRand() {
+    return binRandr(0, binToInt(binMAX));
 }
 

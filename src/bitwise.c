@@ -1,11 +1,8 @@
 #include "bin.h"
-#include "math.h"
-#include "bitwise.h"
-#include "boolean.h"
 
 
 bin binMSBi(bin x) {
-    int i = BIN_BITS-1;
+    bin_int_t i = BIN_BITS-1;
     while (!x.bits[i] && i > 0)
         i--;
     return binIncrement(binNew(i));
@@ -20,7 +17,7 @@ bin binMSB(bin x) {
 
 bin binNOT(bin x) {
     bin r = binZERO;
-    for (int i = 0; i < BIN_BITS; i++)
+    for (bin_int_t i = 0; i < BIN_BITS; i++)
         r.bits[i] = !x.bits[i];
     return r;
 }
@@ -43,7 +40,7 @@ bin binShiftR(bin x, bin y) {
         return x;
 
     bin r = binZERO;
-    for (int i = BIN_BITS-1; i > 0; i--)
+    for (bin_int_t i = BIN_BITS-1; i > 0; i--)
         r.bits[i-1] = x.bits[i];
 
     return binShiftR(r, binDecrement(y));
@@ -62,7 +59,7 @@ bin binShiftOutZerosR(bin x) {
 
 bin binAND(bin x, bin y) {
     bin r = binZERO;
-    for (int i = 0; i < BIN_BITS; i++)
+    for (bin_int_t i = 0; i < BIN_BITS; i++)
         if (x.bits[i] && y.bits[i])
             r.bits[i] = 1;
     return r;
@@ -70,7 +67,7 @@ bin binAND(bin x, bin y) {
 
 bin binOR(bin x, bin y) {
     bin r = binZERO;
-    for (int i = 0; i < BIN_BITS; i++)
+    for (bin_int_t i = 0; i < BIN_BITS; i++)
         if (x.bits[i] || y.bits[i])
             r.bits[i] = 1;
     return r;
@@ -78,7 +75,7 @@ bin binOR(bin x, bin y) {
 
 bin binXOR(bin x, bin y) {
     bin r = binZERO;
-    for (int i = 0; i < BIN_BITS; i++)
+    for (bin_int_t i = 0; i < BIN_BITS; i++)
         if ((x.bits[i] || y.bits[i])
                 && !(x.bits[i] && y.bits[i]))
             r.bits[i] = 1;

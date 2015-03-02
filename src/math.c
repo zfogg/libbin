@@ -1,14 +1,9 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include "bin.h"
-#include "math.h"
-#include "bitwise.h"
-#include "boolean.h"
 
 
 bin binAdd(bin x, bin y) {
     bin r = binZERO;
-    for (int i = 0, carry = 0; i < BIN_BITS; i++) {
+    for (bin_int_t i = 0, carry = 0; i < BIN_BITS; i++) {
         if (!carry && ((x.bits[i] && !y.bits[i])
                     || (!x.bits[i] && y.bits[i]))) {
             r.bits[i] = 1;
@@ -45,32 +40,29 @@ bin binMultiply(bin x, bin y) {
     return binAdd(x, binMultiply(x, binDecrement(y)));
 }
 
-bin binDivide(bin x, bin y) {
-    if (binEQZero(y)) {
-        printf("Division by zero is undefined.\n");
-        exit(1);
+
+bin binDivide(bin numerator, bin denominator) {
+    if (binEQZero(denominator)) {
+        fprintf(stderr, "binDivide - division by zero is undefined\n");
+        abort();
     }
 
-    if (binEQZero(x))
-        return binZERO;
-    else if (binEQZero(binSubtract(x, y)))
-        return binONE;
+    bin quotient  = binZERO,
+        remainder = binZERO;
 
-    bin q = binZERO,
-        r = binZERO;
+    for (bin_int_t i = BIN_BITS-1; i != (bin_int_t)(-1); --i) {
+        remainder = binShiftL1(remainder);
+        remainder.bits[0] = numerator.bits[i];
 
-    for (int i = BIN_BITS-1; i >= 0; i--) {
-        r = binShiftL1(r);
-        r.bits[0] = x.bits[i];
-
-        if (binGTEQ(r, y)) {
-            r = binSubtract(r, y);
-            q.bits[i] = 1;
+        if (binGTEQ(remainder, denominator)) {
+            remainder = binSubtract(remainder, denominator);
+            quotient.bits[i] = 1;
         }
     }
 
-    return q;
+    return quotient;
 }
+
 
 bin binModulus(bin x, bin y) {
     if (binLT(x, y))

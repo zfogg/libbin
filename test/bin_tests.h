@@ -2,10 +2,6 @@
 
 #include "../src/bin.h"
 
-#include "../src/boolean.h"
-#include "../src/bitwise.h"
-#include "../src/math.h"
-
 #include "bin_tests_debug.h"
 
 

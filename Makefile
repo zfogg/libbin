@@ -55,6 +55,6 @@ $(OUT_D)/%.so: $(OBJECTS)
 $(OBJECTS_T): $(OUT_D)/%.o: $(TEST_D)/%.c $(HEADERS_T)
 	$(CC) -c -fpic $< -o $@
 
-$(TESTS): $(OBJECTS_T)
+$(TESTS): $(OBJECTS_T) $(OBJECTS)
 	$(CC) $^ -o $@ -L$(OUT_D) -l$(T)
 

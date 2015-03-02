@@ -1,16 +1,9 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-
 #include "bin_tests.h"
-#include "bin_tests_debug.h"
-
-#include "../src/bin.h"
 
 
 void binMSBi_test() {
-    int r = 1;
-    for (int i = 1; i < BIN_BITS-1; ++i) {
+    bin_int_t r = 1;
+    for (bin_int_t i = 1; i < BIN_BITS-1; ++i) {
         bin b = binNew(1 << i);
         r &= i+1 == binToInt(binMSBi(b));
     }
@@ -20,8 +13,8 @@ void binMSBi_test() {
 
 
 void binMSB_test() {
-    int r = 1;
-    for (int i = 1; i < BIN_BITS-1; ++i) {
+    bin_int_t r = 1;
+    for (bin_int_t i = 1; i < BIN_BITS-1; ++i) {
         bin b = binNew(1 << i);
         r &= (1 << i) == binToInt(binMSB(b));
     }
@@ -31,26 +24,30 @@ void binMSB_test() {
 
 
 void binNOT_test() {
-    int r = 1;
-    for (BIN_INT i = 0; i < binToInt(binMAX); ++i)
-        r &= binEQ(binNew(~i), binNOT(binNew(i)));
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
+        r &= (bin_int_t)~i == binToInt(binNOT(binNew(i)));
+    }
     processTestResults("binNOT", r);
 }
 
 
 void binShiftL_test() {
-    int r = 1;
-    for (int i = 0; i < BIN_BITS; ++i) {
-        bin b = binShiftL(binONE, binNew(i));
-        r &= (1 << i) == binToInt(b);
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_BITS*BIN_BITS; ++i) {
+        bin b1        = binRand();
+        bin b2        = binRandr(0, BIN_BITS);
+        bin_int_t bi1 = binToInt(b1);
+        bin_int_t bi2 = binToInt(b2);
+        r &= (bin_int_t)(bi1 << bi2) == binToInt(binShiftL(b1, b2));
     }
     processTestResults("binShiftL", r);
 }
 
 
 void binShiftL1_test() {
-    int r = 1;
-    for (int i = 0; i < BIN_BITS; ++i) {
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_BITS; ++i) {
         bin b = binShiftL1(binNew(i));
         r &= (i << 1) == binToInt(b);
     }
@@ -64,20 +61,24 @@ void binShiftOutZerosL_test() {
 
 
 void binShiftR_test() {
-    int r = 1;
-    for (int i = 0; i < BIN_BITS; ++i) {
-        bin b = binShiftR(binONE, binNew(i));
-        r &= (1 >> i) == binToInt(b);
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_BITS*BIN_BITS; ++i) {
+        bin b1        = binRand();
+        bin b2        = binRandr(0, BIN_BITS);
+        bin_int_t bi1 = binToInt(b1);
+        bin_int_t bi2 = binToInt(b2);
+        r &= bi1 >> bi2 == binToInt(binShiftR(b1, b2));
     }
     processTestResults("binShiftR", r);
 }
 
 
 void binShiftR1_test() {
-    int r = 1;
-    for (int i = 0; i < BIN_BITS; ++i) {
-        bin b = binShiftR1(binNew(i));
-        r &= (i >> 1) == binToInt(b);
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
+        bin b        = binRand();
+        bin_int_t bi = binToInt(b);
+        r &= (bi >> 1) == binToInt(binShiftR1(b));
     }
     processTestResults("binShiftR1", r);
 }
@@ -89,33 +90,36 @@ void binShiftOutZerosR_test() {
 
 
 void binAND_test() {
-    int r = 1;
-    for (BIN_INT i = 0; i < binToInt(binMAX); ++i) {
-        BIN_INT j = RAND(0, binToInt(binMAX));
-        bin b = binAND(binNew(i), binNew(j));
-        r &= (i & j) == binToInt(b);
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
+        bin b1 = binRand();
+        bin b2 = binRand();
+        bin b  = binAND(b1, b2);
+        r &= (binToInt(b1) & binToInt(b2)) == binToInt(b);
     }
     processTestResults("binAND", r);
 }
 
 
 void binOR_test() {
-    int r = 1;
-    for (BIN_INT i = 0; i < binToInt(binMAX); ++i) {
-        BIN_INT j = RAND(0, binToInt(binMAX));
-        bin b = binOR(binNew(i), binNew(j));
-        r &= (i | j) == binToInt(b);
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
+        bin b1 = binRand();
+        bin b2 = binRand();
+        bin b  = binOR(b1, b2);
+        r &= (binToInt(b1) | binToInt(b2)) == binToInt(b);
     }
     processTestResults("binOR", r);
 }
 
 
 void binXOR_test() {
-    int r = 1;
-    for (BIN_INT i = 0; i < binToInt(binMAX); ++i) {
-        BIN_INT j = RAND(0, binToInt(binMAX));
-        bin b = binXOR(binNew(i), binNew(j));
-        r &= (i ^ j) == binToInt(b);
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
+        bin b1 = binRand();
+        bin b2 = binRand();
+        bin b  = binXOR(b1, b2);
+        r &= (binToInt(b1) ^ binToInt(b2)) == binToInt(b);
     }
     processTestResults("binXOR", r);
 }

@@ -1,11 +1,8 @@
-#include "boolean.h"
 #include "bin.h"
-#include "math.h"
-#include "bitwise.h"
 
 
 bool binEQZero(bin x) {
-    for (int i = 0; i < BIN_BITS; i++)
+    for (bin_int_t i = 0; i < BIN_BITS; i++)
         if (x.bits[i])
             return FALSE;
     return TRUE;
@@ -22,7 +19,7 @@ bool binEQ(bin x, bin y) {
 
 bool binGT(bin x, bin y) {
     bin xorXY = binXOR(x, y);
-    for (int i = BIN_BITS-1; i >= 0; i--)
+    for (bin_int_t i = BIN_BITS-1; i != (bin_int_t)(-1); --i)
         if (xorXY.bits[i])
             return x.bits[i] && !y.bits[i];
     return FALSE;
