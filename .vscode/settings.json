@@ -1,3 +1,14 @@
 {
-    "codespaces.accountProvider": "GitHub"
+    "workbench.startupEditor": "welcomePageInEmptyWorkbench",
+    "editor.cursorStyle": "block",
+    "editor.wordWrapColumn": 100,
+    "window.autoDetectColorScheme": true,
+    "workbench.colorTheme": "Default Dark+",
+    "workbench.preferredLightColorTheme": "Default Dark+",
+    "codespaces.accountProvider": "GitHub",
+    "git.autofetch": true,
+    "telemetry.enableTelemetry": false,
+    "settingsSync.ignoredSettings": [
+    
+    ]
 }
