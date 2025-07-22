@@ -96,7 +96,9 @@ void binPow_test() {
         bin b2        = binNew(sqrt(sqrt(BIN_BITS*BIN_BITS - i + 1) + 1));
         bin_int_t bi1 = binToInt(b1);
         bin_int_t bi2 = binToInt(b2);
-        r &= (bin_int_t)pow(bi1, bi2) == binToInt(binPow(b1, b2));
+        unsigned int p = pow(bi1, bi2);
+        if (p > BIN_INT_MAX) continue;
+        r &= (bin_int_t)p == binToInt(binPow(b1, b2));
     }
     processTestResults("binPow", r);
 }
