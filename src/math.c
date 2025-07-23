@@ -1,4 +1,5 @@
 #include "bin.h"
+#include "boolean.h"
 #include <assert.h>
 
 
@@ -45,7 +46,7 @@ bin binSubtract(const bin x, const bin y) {
 
 // Decrement a binary number. Do not decrement zero.
 bin binDecrement(const bin x) {
-    assert(!binEQ(x, binZERO));
+    assert(!binEQZero(x));
     return binSubtract(x, binONE);
 }
 
@@ -169,29 +170,26 @@ bin binLog10(const bin x) {
     if (binEQOne(x))
         return binZERO; // log10(1) = 0
     
-    // Convert to integer for easier calculation
-    bin_int_t x_int = binToInt(x);
-    
     // Use a lookup table approach for common values
     // For values 1-1000, we can pre-calculate log10
-    if (x_int <= 1000) {
+    if (binLTEQ(x, binNew(1000))) {
         // Simple lookup table for powers of 10 and common values
-        if (x_int == 10) return binNew(1);
-        if (x_int == 100) return binNew(2);
-        if (x_int == 1000) return binNew(3);
+        if (binEQ(x, binNew(10))) return binNew(1);
+        if (binEQ(x, binNew(100))) return binNew(2);
+        if (binEQ(x, binNew(1000))) return binNew(3);
         
         // For other values, find the largest power of 10 that fits
-        if (x_int >= 100) return binNew(2);
-        if (x_int >= 10) return binNew(1);
+        if (binGTEQ(x, binNew(100))) return binNew(2);
+        if (binGTEQ(x, binNew(10))) return binNew(1);
         return binZERO; // x < 10
     }
     
     // For larger values, use a different approach
     // Count the number of digits in base 10 representation
-    bin_int_t temp = x_int;
+    bin temp = x;
     bin_int_t digit_count = 0;
-    while (temp > 0) {
-        temp = temp / 10;
+    while (binGT(temp, binZERO)) {
+        temp = binDivide(temp, binNew(10));
         digit_count++;
     }
     
