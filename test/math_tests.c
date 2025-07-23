@@ -128,7 +128,6 @@ void binLog10Test() {
     for (bin_int_t i = 1; i < BIN_INT_MAX; ++i) {
         bin b = binNew(i);
         r &= (bin_int_t)log10(i) == binToInt(binLog10(b));
-        if (r == 0) abort();
     }
     processTestResults("binLog10", r);
 }
