@@ -54,6 +54,8 @@ void binModulus_test        ();
 
 void binPow_test            ();
 
+void binSqrt_test           ();
+
 void binLog2Test            ();
 
 void binLog10Test           ();

@@ -150,6 +150,38 @@ bin binPow(const bin x, const bin y) {
     return result;
 }
 
+// Calculate the square root of a binary number
+bin binSqrt(const bin x) {
+    if (binEQZero(x))
+        return binZERO;
+    else if (binEQOne(x))
+        return binONE;
+    
+    // Use Newton-Raphson method: x_{n+1} = (x_n + a/x_n) / 2
+    // Start with x/2 as initial guess
+    bin guess = binShiftR1(x);
+    bin prev_guess;
+    bin_int_t iterations = 0;
+    const bin_int_t max_iterations = 30; // Prevent infinite loops
+    
+    do {
+        prev_guess = guess;
+        
+        // Calculate a/guess
+        bin quotient = binDivide(x, guess);
+        
+        // Calculate (guess + a/guess) / 2
+        bin sum = binAdd(guess, quotient);
+        guess = binShiftR1(sum);
+        
+        iterations++;
+        
+        // Stop if we've converged or hit max iterations
+    } while (!binEQ(guess, prev_guess) && iterations < max_iterations);
+    
+    return guess;
+}
+
 // Calculate the base2 logarithm of a binary number
 bin binLog2(const bin x) {
     assert(!binEQZero(x)); // log2(0) is undefined

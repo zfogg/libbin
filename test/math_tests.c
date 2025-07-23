@@ -104,6 +104,16 @@ void binPow_test() {
     processTestResults("binPow", r);
 }
 
+void binSqrt_test() {
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
+        bin b = binNew(i);
+        double diff = fabs(sqrt(i) - (double)binToInt(binSqrt(b)));
+        r &= 1.0 > diff;
+    }
+    processTestResults("binSqrt", r);
+}
+
 void binLog2Test() {
     bin_int_t r = 1;
     for (bin_int_t i = 1; i < BIN_INT_MAX; ++i) {
