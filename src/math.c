@@ -42,16 +42,19 @@ bin binMultiply(const bin x, const bin y) {
         return binZERO;
     else if (binEQOne(y))
         return x;
+
     // Use binary multiplication algorithm (similar to long multiplication)
     // For each bit in the multiplier, if it's 1, add the shifted multiplicand
     bin result = binZERO;
     bin multiplicand = x;
+
     for (bin_int_t i = 0; i < BIN_BITS; i++) {
         if (y.bits[i]) {
             result = binAdd(result, multiplicand);
         }
         multiplicand = binShiftL1(multiplicand);
     }
+
     return result;
 }
 
@@ -80,6 +83,7 @@ bin binDivide(const bin numerator, const bin denominator) {
 // Calculate the modulus of two binary numbers. Do not modulus by zero.
 bin binModulus(const bin x, const bin y) {
     assert(!binEQZero(y));
+
     if (binLT(x, y))
         return x;
     
@@ -110,7 +114,7 @@ bin binPow(const bin x, const bin y) {
     bin result = binONE;
     bin base = x;
     bin exponent = y;
-    
+
     while (!binEQZero(exponent)) {
         if (exponent.bits[0]) {  // If least significant bit is 1
             result = binMultiply(result, base);
@@ -121,4 +125,3 @@ bin binPow(const bin x, const bin y) {
     
     return result;
 }
-
