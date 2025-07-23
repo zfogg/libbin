@@ -35,6 +35,9 @@ int main(int argc, char* argv[]) {
     binDivide_test          ();
     binModulus_test         ();
     binPow_test             ();
+    binLog2Test             ();
+    binLog10Test            ();
+    binLogTest              ();
 
     puts("");
     binEQZero_test          ();

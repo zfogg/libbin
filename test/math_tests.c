@@ -104,3 +104,32 @@ void binPow_test() {
     processTestResults("binPow", r);
 }
 
+void binLog2Test() {
+    bin_int_t r = 1;
+    for (bin_int_t i = 1; i < BIN_INT_MAX; ++i) {
+        bin b = binNew(i);
+        r &= (bin_int_t)log2(i) == binToInt(binLog2(b));
+    }
+    processTestResults("binLog2", r);
+}
+
+void binLog10Test() {
+    bin_int_t r = 1;
+    for (bin_int_t i = 1; i < BIN_INT_MAX; ++i) {
+        bin b = binNew(i);
+        r &= (bin_int_t)log10(i) == binToInt(binLog10(b));
+        if (r == 0) abort();
+    }
+    processTestResults("binLog10", r);
+}
+
+void binLogTest() {
+    bin_int_t r = 1;
+    for (bin_int_t i = 1; i < BIN_INT_MAX; ++i) {
+        bin b = binNew(i);
+        // Check that log(i) and binToInt(binLog(b)) are within a small constant float value of each other
+        double diff = fabs(log(i) - (double)binToInt(binLog(b)));
+        r &= diff < 1.1;
+    }
+    processTestResults("binLog", r);
+}

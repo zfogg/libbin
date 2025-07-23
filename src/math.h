@@ -107,3 +107,35 @@ bin binModulus(const bin x, const bin y);
  *       Large exponents may cause overflow.
  */
 bin binPow(const bin x, const bin y);
+
+/**
+ * @brief Calculate the square root of a binary number
+ * @param x The binary number to calculate the square root of
+ * @return The square root of x as a binary number
+ * 
+ * @note This function implements the Newton-Raphson method for square root calculation.
+ */
+bin binSqrt(const bin x);
+
+/**
+ * @brief Calculate the base2 logarithm of a binary number
+ * @param x The binary number to calculate the logarithm of
+ * @return The logarithm of x as a binary number
+ */
+bin binLog2(const bin x);
+
+/**
+ * @brief Calculate the base10 logarithm of a binary number
+ * @param x The binary number to calculate the logarithm of
+ * @return The logarithm of x as a binary number
+ */
+bin binLog10(const bin x);
+
+/**
+ * @brief Calculate the natural logarithm of a binary number
+ * @param x The binary number to calculate the logarithm of
+ * @return The logarithm of x as a binary number
+ * 
+ * @note This function implements the natural logarithm using the Taylor series expansion.
+ */
+bin binLog(const bin x);

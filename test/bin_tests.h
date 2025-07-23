@@ -54,6 +54,12 @@ void binModulus_test        ();
 
 void binPow_test            ();
 
+void binLog2Test            ();
+
+void binLog10Test           ();
+
+void binLogTest             ();
+
 
 // boolean
 void binEQZero_test         ();
