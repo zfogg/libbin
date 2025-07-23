@@ -26,10 +26,10 @@ void binLSBi_test() {
 void binMSB_test() {
     bin_int_t r = 1;
     for (bin_int_t i = 1; i < BIN_BITS-1; ++i) {
-        bin b = binNew(1 << i);
-        r &= (1 << i) == binToInt(binMSB(b));
+        bin b = binNew((bin_int_t)1 << i);
+        r &= ((bin_int_t)1 << i) == binToInt(binMSB(b));
     }
-    r &= (1 << (BIN_BITS-1)) == binToInt(binMSB(binMAX));
+    r &= ((bin_int_t)1 << (BIN_BITS-1)) == binToInt(binMSB(binMAX));
     processTestResults("binMSB", r);
 }
 

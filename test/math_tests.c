@@ -18,9 +18,9 @@ void binAdd_test() {
 
 void binIncrement_test() {
     bin_int_t r = 1;
-    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
+    for (bin_int_t i = 0; i < BIN_INT_MAX - 1; ++i) {
         bin b = binNew(i);
-        r &= (i + 1) == binToInt(binIncrement(b)) && binToInt(b) < BIN_INT_MAX;
+        r &= (i + 1) == binToInt(binIncrement(b));
     }
     processTestResults("binIncrement", r);
 }

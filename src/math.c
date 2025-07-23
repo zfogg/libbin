@@ -12,6 +12,15 @@ bin binAdd(const bin x, const bin y) {
         r.bits[i] = sum & 1;  // Extract least significant bit
         carry = sum >> 1;     // Extract carry bit
     }
+
+    // Check for overflow
+    // if (carry != 0) {
+    //     puts("overflow:");
+    //     binPrint(x);
+    //     binPrint(y);
+    //     puts("");
+    //     // abort();
+    // }
     
     return r;
 }
@@ -19,12 +28,17 @@ bin binAdd(const bin x, const bin y) {
 
 // Increment a binary number. Do not increment the maximum value.
 bin binIncrement(const bin x) {
+    assert(!binEQMax(x));
     return binAdd(x, binONE);
 }
 
 
-// Subtract two binary numbers.
+// Subtract two binary numbers. Do not subtract a larger number from a smaller number.
 bin binSubtract(const bin x, const bin y) {
+    assert(binGTEQ(x, y));
+    if (binEQZero(y))
+        return x;
+    // For two's complement subtraction: x - y = x + (~y + 1)
     return binAdd(x, binIncrement(binNOT(y)));
 }
 
@@ -49,8 +63,20 @@ bin binMultiply(const bin x, const bin y) {
     bin multiplicand = x;
 
     for (bin_int_t i = 0; i < BIN_BITS; i++) {
-        if (y.bits[i])
+        if (y.bits[i]) {
+            // Check if adding multiplicand would cause overflow
+            // If result + multiplicand > MAX, then overflow would occur
+            // bin_int_t result_int = binToInt(result);
+            // bin_int_t multiplicand_int = binToInt(multiplicand);
+            // if (result_int > BIN_INT_MAX - multiplicand_int) {
+            //     puts("overflow in multiplication:");
+            //     binPrint(x);
+            //     binPrint(y);
+            //     puts("");
+            //     // abort();
+            // }
             result = binAdd(result, multiplicand);
+        }
         multiplicand = binShiftL1(multiplicand);
     }
 
