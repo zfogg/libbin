@@ -32,6 +32,10 @@ void binOR_test             ();
 
 void binXOR_test            ();
 
+void binRotateL_test       ();
+
+void binRotateR_test       ();
+
 
 // math
 void binAdd_test            ();
@@ -55,6 +59,8 @@ void binPow_test            ();
 void binEQZero_test         ();
 
 void binEQOne_test          ();
+
+void binEQMax_test          ();
 
 void binEQ_test             ();
 

@@ -23,6 +23,8 @@ int main(int argc, char* argv[]) {
     binAND_test             ();
     binOR_test              ();
     binXOR_test             ();
+    binRotateL_test         ();
+    binRotateR_test         ();
 
     puts("");
     binAdd_test             ();
@@ -37,6 +39,7 @@ int main(int argc, char* argv[]) {
     puts("");
     binEQZero_test          ();
     binEQOne_test           ();
+    binEQMax_test           ();
     binEQ_test              ();
     binGT_test              ();
     binLT_test              ();

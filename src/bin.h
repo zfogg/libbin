@@ -60,12 +60,6 @@ void binIntPrint2(bin_int_t bi1, bin_int_t bi2);
 // Random number generation
 
 /**
- * @brief Generate a random binary number
- * @return A random binary number
- */ 
-bin binRand(void);
-
-/**
  * @brief Generate a random binary number between two values
  * @param min The minimum value
  * @param max The maximum value
@@ -73,3 +67,9 @@ bin binRand(void);
  */ 
 bin binRandr(bin_int_t min, bin_int_t max);
 
+
+/**
+ * @brief Generate a random binary number
+ * @return A random binary number
+ */ 
+bin binRand(void);

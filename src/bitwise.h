@@ -98,3 +98,19 @@ bin binOR(const bin x, const bin y);
  */
 bin binXOR(const bin x, const bin y);
 
+
+/**
+ * @brief Performs a bitwise left rotation of the bits.
+ * @param x The binary operand to rotate.
+ * @param rotate_by Rotate bits to the left by this amount.
+ * @return The rotated result.
+ */
+bin binRotateL(const bin x, const bin rotate_by);
+
+/**
+ * @brief Performs a bitwise right rotation of the bits.
+ * @param x The binary operand to rotate.
+ * @param rotate_by Rotate bits to the right by this amount.
+ * @return The rotated result.
+ */
+bin binRotateR(const bin x, const bin rotate_by);

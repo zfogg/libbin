@@ -105,7 +105,7 @@ bin binDivide(const bin numerator, const bin denominator) {
 }
 
 
-// Calculate the modulus of two binary numbers. Do not modulus by zero.
+// Calculate x modulus y. Do not modulus by zero.
 bin binModulus(const bin x, const bin y) {
     assert(!binEQZero(y));
 
@@ -127,7 +127,7 @@ bin binModulus(const bin x, const bin y) {
 }
 
 
-// Calculate the power of two binary numbers.
+// Calculate x to the power of y.
 bin binPow(const bin x, const bin y) {
     if (binEQZero(y))
         return binONE;

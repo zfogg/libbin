@@ -1,5 +1,4 @@
 #include "bin.h"
-#include <time.h>
 
 
 // Create a binary number from an integer.
@@ -57,11 +56,6 @@ static bin_int_t randr(bin_int_t min, bin_int_t max) {
        return (max - min + 1)*scaled + min;
 }
 
-// Generate a random // Generate a random binary number.
-bin binRand(void) {
-    return binNew(rand() % (BIN_INT_MAX + 1));
-}
-
 // Generate a random binary number between two values.
 bin binRandr(bin_int_t min, bin_int_t max) {
     if (min > max) {
@@ -72,3 +66,7 @@ bin binRandr(bin_int_t min, bin_int_t max) {
     return binNew(randr(min, max));
 }
 
+// Generate a random // Generate a random binary number.
+bin binRand(void) {
+    return binRandr(0, BIN_INT_MAX);
+}

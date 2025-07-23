@@ -151,3 +151,45 @@ void binXOR_test() {
     processTestResults("binXOR", r);
 }
 
+
+void binRotateL_test() {
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
+        bin b1 = binRand();
+        bin b2 = binRandr(0, BIN_BITS);
+        bin_int_t bi1 = binToInt(b1);
+        bin_int_t bi2 = binToInt(b2);
+        bin b = binRotateL(b1, b2);
+        
+        // Manual left rotation for comparison
+        bin_int_t expected = bi1;
+        for (bin_int_t j = 0; j < bi2; j++) {
+            bin_int_t msb = (expected >> (BIN_BITS - 1)) & 1;
+            expected = (expected << 1) | msb;
+        }
+        
+        r &= expected == binToInt(b);
+    }
+    processTestResults("binRotateL", r);
+}
+
+void binRotateR_test() {
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
+        bin b1 = binRand();
+        bin b2 = binRandr(0, BIN_BITS);
+        bin_int_t bi1 = binToInt(b1);
+        bin_int_t bi2 = binToInt(b2);
+        bin b = binRotateR(b1, b2);
+        
+        // Manual right rotation for comparison
+        bin_int_t expected = bi1;
+        for (bin_int_t j = 0; j < bi2; j++) {
+            bin_int_t lsb = expected & 1;
+            expected = (expected >> 1) | (lsb << (BIN_BITS - 1));
+        }
+        
+        r &= expected == binToInt(b);
+    }
+    processTestResults("binRotateR", r);
+}

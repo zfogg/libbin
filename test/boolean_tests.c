@@ -15,7 +15,7 @@ void binEQZero_test() {
 void binEQOne_test() {
     bin_int_t r = 1;
     for (bin_int_t i = 2; i < BIN_INT_MAX; ++i) {
-        bin b        = binNew(i);
+        bin b = binNew(i);
         r &= false == binEQZero(b);
     }
     r &= false == binEQOne(binZERO);
@@ -23,6 +23,16 @@ void binEQOne_test() {
     processTestResults("binEQOne", r);
 }
 
+
+void binEQMax_test() {
+    bin_int_t r = 1;
+    for (bin_int_t i = 0; i < BIN_INT_MAX-1; ++i) {
+        bin b = binNew(i);
+        r &= false == binEQMax(b);
+    }
+    r &= true == binEQMax(binNew(BIN_INT_MAX));
+    processTestResults("binEQMax", r);
+}
 
 void binEQ_test() {
     bin_int_t r = 1;
@@ -32,8 +42,8 @@ void binEQ_test() {
         bin_int_t bi1 = binToInt(b1);
         bin_int_t bi2 = binToInt(b2);
         r &= (bi1 == bi2) == binEQ(b1, b2);
-        r &= true         == binEQ(b1, b1);
-        r &= true         == binEQ(b2, b2);
+        r &= binEQ(b1, b1);
+        r &= binEQ(b2, b2);
     }
     processTestResults("binEQ", r);
 }

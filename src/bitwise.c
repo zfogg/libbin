@@ -127,3 +127,37 @@ bin binXOR(const bin x, const bin y) {
     }
     return r;
 }
+
+// Perform a bitwise left rotation of the bits.
+bin binRotateL(const bin x, const bin rotate_by) {
+    if (binEQZero(rotate_by))
+        return x;
+    
+    bin_int_t rotate_amount = binToInt(rotate_by) % BIN_BITS;
+    if (rotate_amount == 0)
+        return x;
+    
+    bin r = binZERO;
+    for (bin_int_t i = 0; i < BIN_BITS; i++) {
+        bin_int_t new_pos = (i + rotate_amount) % BIN_BITS;
+        r.bits[new_pos] = x.bits[i];
+    }
+    return r;
+}
+
+// Perform a bitwise right rotation of the bits.
+bin binRotateR(const bin x, const bin rotate_by) {
+    if (binEQZero(rotate_by))
+        return x;
+    
+    bin_int_t rotate_amount = binToInt(rotate_by) % BIN_BITS;
+    if (rotate_amount == 0)
+        return x;
+    
+    bin r = binZERO;
+    for (bin_int_t i = 0; i < BIN_BITS; i++) {
+        bin_int_t new_pos = (i - rotate_amount + BIN_BITS) % BIN_BITS;
+        r.bits[new_pos] = x.bits[i];
+    }
+    return r;
+}
