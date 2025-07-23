@@ -5,7 +5,7 @@
 
 void binAdd_test() {
     bin_int_t r = 1;
-    for (bin_int_t i = 0; i < BIN_BITS*BIN_BITS; ++i) {
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
         bin b1        = binRand();
         bin_int_t bi1 = binToInt(b1);
         bin b2        = binRandr(0, BIN_INT_MAX - bi1);
@@ -18,9 +18,9 @@ void binAdd_test() {
 
 void binIncrement_test() {
     bin_int_t r = 1;
-    for (bin_int_t i = 0; i < BIN_BITS*BIN_BITS; ++i) {
-        bin b  = binRandr(0, BIN_INT_MAX - 1);
-        r &= (binToInt(b) + 1) == binToInt(binIncrement(b));
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
+        bin b = binNew(i);
+        r &= (i + 1) == binToInt(binIncrement(b)) && binToInt(b) < BIN_INT_MAX;
     }
     processTestResults("binIncrement", r);
 }
@@ -28,7 +28,7 @@ void binIncrement_test() {
 
 void binSubtract_test() {
     bin_int_t r = 1;
-    for (bin_int_t i = 0; i < BIN_BITS*BIN_BITS; ++i) {
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
         bin b1        = binRand();
         bin_int_t bi1 = binToInt(b1);
         bin b2        = binRandr(0, bi1);
@@ -41,10 +41,9 @@ void binSubtract_test() {
 
 void binDecrement_test() {
     bin_int_t r = 1;
-    for (bin_int_t i = 0; i < BIN_BITS*BIN_BITS; ++i) {
-        bin b        = binRandr(1, BIN_INT_MAX);
-        bin_int_t bi = binToInt(b);
-        r &= (bin_int_t)(bi - 1) == binToInt(binDecrement(b));
+    for (bin_int_t i = 1; i < BIN_INT_MAX; ++i) {
+        bin b        = binNew(i);
+        r &= (i - 1) == binToInt(binDecrement(b));
     }
     processTestResults("binDecrement", r);
 }
@@ -52,7 +51,7 @@ void binDecrement_test() {
 
 void binMultiply_test() {
     bin_int_t r = 1;
-    for (bin_int_t i = 0; i < BIN_BITS*BIN_BITS; ++i) {
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
         bin b1        = binRand();
         bin_int_t bi1 = binToInt(b1);
         bin b2        = binRandr(0, BIN_INT_MAX / bi1);
@@ -65,7 +64,7 @@ void binMultiply_test() {
 
 void binDivide_test() {
     bin_int_t r = 1;
-    for (bin_int_t i = 0; i < BIN_BITS*BIN_BITS; ++i) {
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
         bin b1        = binRandr(1, BIN_INT_MAX);
         bin_int_t bi1 = binToInt(b1);
         bin b2        = binRandr(1, bi1);
@@ -78,10 +77,10 @@ void binDivide_test() {
 
 void binModulus_test() {
     bin_int_t r = 1;
-    for (bin_int_t i = 0; i < BIN_BITS*BIN_BITS; ++i) {
+    for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
         bin b1        = binNew(i);
         bin_int_t bi1 = binToInt(b1);
-        bin b2        = binRand();
+        bin b2        = binRandr(1, BIN_INT_MAX);
         bin_int_t bi2 = binToInt(b2);
         r &= (bi1 % bi2) == binToInt(binModulus(b1, b2));
     }

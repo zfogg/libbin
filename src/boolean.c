@@ -9,7 +9,16 @@ bool binEQZero(bin x) {
 }
 
 bool binEQOne(bin x) {
+    if (binEQZero(x))
+        return FALSE;
     return binEQZero(binDecrement(x));
+}
+
+bool binEQMax(bin x) {
+    int r = 1;
+    for (bin_int_t i = 0; i < BIN_BITS; i++)
+        r &= x.bits[i] == 1;
+    return r == 1;
 }
 
 bool binEQ(bin x, bin y) {

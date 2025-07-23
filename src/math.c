@@ -1,4 +1,5 @@
 #include "bin.h"
+#include <assert.h>
 
 
 bin binAdd(bin x, bin y) {
@@ -20,6 +21,8 @@ bin binAdd(bin x, bin y) {
 }
 
 bin binIncrement(bin x) {
+    // FIXME: this assertion should pass, but it doesn't. Check binMSB.
+    // assert(!binEQMax(x));
     return binAdd(x, binONE);
 }
 
@@ -28,6 +31,7 @@ bin binSubtract(bin x, bin y) {
 }
 
 bin binDecrement(bin x) {
+    assert(!binEQ(x, binZERO));
     return binSubtract(x, binONE);
 }
 
@@ -42,10 +46,7 @@ bin binMultiply(bin x, bin y) {
 
 
 bin binDivide(bin numerator, bin denominator) {
-    if (binEQZero(denominator)) {
-        fprintf(stderr, "binDivide - division by zero is undefined\n");
-        abort();
-    }
+    assert(!binEQZero(denominator));
 
     bin quotient  = binZERO,
         remainder = binZERO;
@@ -65,6 +66,7 @@ bin binDivide(bin numerator, bin denominator) {
 
 
 bin binModulus(bin x, bin y) {
+    assert(!binEQZero(y));
     if (binLT(x, y))
         return x;
     return binSubtract(x, binMultiply(y, binDivide(x, y)));

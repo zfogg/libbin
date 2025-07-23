@@ -19,6 +19,8 @@ bool binEQZero(bin x);
 
 bool binEQOne(bin x);
 
+bool binEQMax(bin x);
+
 bool binEQ(bin x, bin y);
 
 
