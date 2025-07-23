@@ -49,9 +49,8 @@ bin binMultiply(const bin x, const bin y) {
     bin multiplicand = x;
 
     for (bin_int_t i = 0; i < BIN_BITS; i++) {
-        if (y.bits[i]) {
+        if (y.bits[i])
             result = binAdd(result, multiplicand);
-        }
         multiplicand = binShiftL1(multiplicand);
     }
 
@@ -94,9 +93,8 @@ bin binModulus(const bin x, const bin y) {
         remainder = binShiftL1(remainder);
         remainder.bits[0] = x.bits[i];
         
-        if (binGTEQ(remainder, y)) {
+        if (binGTEQ(remainder, y))
             remainder = binSubtract(remainder, y);
-        }
     }
     
     return remainder;
@@ -107,7 +105,7 @@ bin binModulus(const bin x, const bin y) {
 bin binPow(const bin x, const bin y) {
     if (binEQZero(y))
         return binONE;
-    if (binEQOne(y))
+    else if (binEQOne(y))
         return x;
     
     // Use binary exponentiation (square and multiply)
@@ -116,9 +114,8 @@ bin binPow(const bin x, const bin y) {
     bin exponent = y;
 
     while (!binEQZero(exponent)) {
-        if (exponent.bits[0]) {  // If least significant bit is 1
+        if (exponent.bits[0]) // If least significant bit is 1
             result = binMultiply(result, base);
-        }
         base = binMultiply(base, base);
         exponent = binShiftR1(exponent);
     }

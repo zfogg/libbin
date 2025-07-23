@@ -5,16 +5,18 @@
 // Create a binary number from an integer.
 bin binNew(bin_int_t n) {
     bin b;
-    for (bin_int_t i = 0; i < BIN_BITS; i++)
+    for (bin_int_t i = 0; i < BIN_BITS; i++) {
         b.bits[i] = (n >> i) & 1;
+    }
     return b;
 }
 
 // Convert a binary number to an integer.
 bin_int_t binToInt(const bin x) {
     bin_int_t r = 0;
-    for (bin_int_t i = 0; i < BIN_BITS; i++)
+    for (bin_int_t i = 0; i < BIN_BITS; i++) {
         r |= x.bits[i] << i;
+    }
     return r;
 }
 

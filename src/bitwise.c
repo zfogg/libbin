@@ -4,8 +4,9 @@
 // Find the index of the most significant bit.
 bin binMSBi(const bin x) {
     bin_int_t i = BIN_BITS-1;
-    while (!x.bits[i] && i > 0)
+    while (!x.bits[i] && i > 0) {
         i--;
+    }
     return binIncrement(binNew(i));
 }
 
