@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
     (void)(argc); (void)(argv);
     srand(time(NULL));
 
-    puts("");
+    // puts("");
     binMSBi_test            ();
     binLSBi_test            ();
     binMSB_test             ();
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
     binLTEQ_test            ();
 
     puts("");
-    processTestResults("Pass ALL the tests", bin_testResults);
+    processTestResults("🥳 Pass ALL the tests 🎊", bin_testResults);
 
     return !bin_testResults;
 }

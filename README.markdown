@@ -68,9 +68,18 @@ The library follows strict implementation rules:
 - **Random**: `binRand()`, `binRandr()` - Random number generation
 
 ### ❌ Not Yet Implemented 🚧
-- Rotate left/right operations
-- Logarithm functions
-- Additional boolean operations
+- Bitwise
+    - Rotate operations: binRotateLeft(), binRotateRight() - Circular bit shifting
+    - Bit counting: binPopCount() - Count set bits (population count)
+    - Bit scanning: binFindFirstSet(), binFindLastSet() - Find first/last set bit
+- Math
+    - Logarithm functions: binLog2(), binLog10() - Binary and decimal logarithms
+    - Square root: binSqrt() - Integer square root
+    - Factorial: binFactorial() - For small numbers (up to 8)
+    - GCD/LCM: binGCD(), binLCM() - Greatest common divisor, least common multiple
+    - Prime checking: binIsPrime() - Test if number is prime
+    - Next/Previous prime: binNextPrime(), binPrevPrime()
+    
 
 ## Building and Testing 🔨
 
