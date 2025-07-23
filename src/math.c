@@ -159,7 +159,7 @@ bin binLog2(const bin x) {
     
     // Find the position of the most significant bit (MSB)
     // This gives us the integer part of log2(x)
-    return binDecrement(binMSBi(x));
+    return binMSBi(x);
 }
 
 

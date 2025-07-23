@@ -7,7 +7,7 @@ bin binMSBi(const bin x) {
     while (!x.bits[i] && i > 0) {
         i--;
     }
-    return binIncrement(binNew(i));
+    return binNew(i);
 }
 
 // Find the index of the least significant bit.
@@ -23,7 +23,7 @@ bin binLSBi(const bin x) {
 bin binMSB(const bin x) {
     if (binEQZero(x))
         return binZERO;
-    return binShiftL(binONE, binDecrement(binMSBi(x)));
+    return binShiftL(binONE, binMSBi(x));
 }
 
 // Calculate the bitwise NOT of a binary number.
@@ -63,7 +63,7 @@ bin binShiftOutZerosL(const bin x) {
     if (binEQZero(x))
         return binZERO;
     
-    bin_int_t msb_index = binToInt(binDecrement(binMSBi(x)));
+    bin_int_t msb_index = binToInt(binMSBi(x));
     return binShiftL(x, binNew(BIN_BITS - 1 - msb_index));
 }
 

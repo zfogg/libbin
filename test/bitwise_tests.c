@@ -5,9 +5,9 @@ void binMSBi_test() {
     bin_int_t r = 1;
     for (bin_int_t i = 1; i < BIN_BITS-1; ++i) {
         bin b = binNew(1 << i);
-        r &= (i+1) == binToInt(binMSBi(b));
+        r &= i == binToInt(binMSBi(b));
     }
-    r &= BIN_BITS == binToInt(binMSBi(binMAX));
+    r &= BIN_BITS-1 == binToInt(binMSBi(binMAX));
     processTestResults("binMSBi", r);
 }
 
