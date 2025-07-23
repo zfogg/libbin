@@ -2,6 +2,7 @@
 #include <assert.h>
 
 
+// Add two binary numbers.
 bin binAdd(bin x, bin y) {
     bin r = binZERO;
     for (bin_int_t i = 0, carry = 0; i < BIN_BITS; i++) {
@@ -20,22 +21,29 @@ bin binAdd(bin x, bin y) {
     return r;
 }
 
+
+// Increment a binary number. Do not increment the maximum value.
 bin binIncrement(bin x) {
     // FIXME: this assertion should pass, but it doesn't. Check binMSB.
     // assert(!binEQMax(x));
     return binAdd(x, binONE);
 }
 
+
+// Subtract two binary numbers.
 bin binSubtract(bin x, bin y) {
     return binAdd(x, binIncrement(binNOT(y)));
 }
 
+
+// Decrement a binary number. Do not decrement zero.
 bin binDecrement(bin x) {
     assert(!binEQ(x, binZERO));
     return binSubtract(x, binONE);
 }
 
 
+// Multiply two binary numbers.
 bin binMultiply(bin x, bin y) {
     if (binEQZero(y))
         return binZERO;
@@ -45,6 +53,7 @@ bin binMultiply(bin x, bin y) {
 }
 
 
+// Divide two binary numbers. Do not divide by zero.
 bin binDivide(bin numerator, bin denominator) {
     assert(!binEQZero(denominator));
 
@@ -65,6 +74,7 @@ bin binDivide(bin numerator, bin denominator) {
 }
 
 
+// Calculate the modulus of two binary numbers. Do not modulus by zero.
 bin binModulus(bin x, bin y) {
     assert(!binEQZero(y));
     if (binLT(x, y))
@@ -73,6 +83,7 @@ bin binModulus(bin x, bin y) {
 }
 
 
+// Calculate the power of two binary numbers.
 bin binPow(bin x, bin y) {
     if (binEQZero(y))
         return binONE;

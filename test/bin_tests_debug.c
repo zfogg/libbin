@@ -1,6 +1,7 @@
 #include "bin_tests.h"
 
 
+// Print the results of a test to the terminal in a nice format.
 void processTestResults(const char* testName, const bin_int_t results) {
     bin_testResults &= results;
     const char* color  = results ? CC_GREEN : CC_RED;
@@ -11,11 +12,13 @@ void processTestResults(const char* testName, const bin_int_t results) {
 }
 
 
+// Generate a random binary number between two values.
 bin binRandr(bin_int_t min, bin_int_t max) {
     return binNew(randr(min, max));
 }
 
 
+// Generate a random binary number.
 bin binRand() {
     return binRandr(0, binToInt(binMAX));
 }
