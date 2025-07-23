@@ -1,12 +1,12 @@
-# libbin
+# libbin 🔢
 
 A C library implementing bitwise, numerical, and logical operations using a custom 16-bit binary representation. This project demonstrates how to implement fundamental computer operations using only basic logical operators.
 
-## Overview
+## Overview 📋
 
 libbin provides a complete set of arithmetic and logical operations implemented using a custom `bin` type that represents 16-bit values as arrays of individual bits. The library is built with strict constraints to demonstrate fundamental computer science concepts.
 
-## Architecture
+## Architecture 🏗️
 
 ### Core Data Type
 The library uses a custom `bin` type defined in `src/16.h`:
@@ -23,7 +23,7 @@ Each `bin` represents a 16-bit value where each bit is stored as a separate elem
 - `binONE`: Only the least significant bit set to 1
 - `binMAX`: All bits set to 1
 
-## Implementation Constraints
+## Implementation Constraints ⚠️
 
 The library follows strict implementation rules:
 - **Allowed operators**: Only `&&`, `||`, and `!` from C
@@ -32,11 +32,11 @@ The library follows strict implementation rules:
 - **Array indexing**: May use `+` and `-` for array indexing only
 - **Minor exceptions**: Simple loops are allowed
 
-## Features
+## Features ✨
 
 ### ✅ Implemented Operations
 
-#### Bitwise Operations (`src/bitwise.h`)
+#### Bitwise Operations (`src/bitwise.h`) 🔧
 - **NOT** (`binNOT`): Bitwise negation
 - **AND** (`binAND`): Bitwise AND
 - **OR** (`binOR`): Bitwise OR  
@@ -48,7 +48,7 @@ The library follows strict implementation rules:
   - Right shift (`binShiftR`, `binShiftR1`)
   - Shift out zeros (`binShiftOutZerosL`, `binShiftOutZerosR`)
 
-#### Mathematical Operations (`src/math.h`)
+#### Mathematical Operations (`src/math.h`) 🧮
 - **Addition** (`binAdd`, `binIncrement`)
 - **Subtraction** (`binSubtract`, `binDecrement`)
 - **Multiplication** (`binMultiply`)
@@ -56,23 +56,23 @@ The library follows strict implementation rules:
 - **Modulus** (`binModulus`)
 - **Exponentiation** (`binPow`)
 
-#### Boolean Operations (`src/boolean.h`)
+#### Boolean Operations (`src/boolean.h`) 🔀
 - **Equality** (`binEQ`, `binEQZero`, `binEQOne`, `binEQMax`)
 - **Comparison** (`binGT`, `binLT`, `binGTEQ`, `binLTEQ`)
 - **Utility macros**: `binMin`, `binMax`
 
-#### Core Utilities (`src/bin.h`)
+#### Core Utilities (`src/bin.h`) 🛠️
 - **Creation**: `binNew()` - Create bin from integer
 - **Conversion**: `binToInt()` - Convert bin to integer
 - **Display**: `binPrint()`, `binIntPrint()` - Pretty printing
 - **Random**: `binRand()`, `binRandr()` - Random number generation
 
-### ❌ Not Yet Implemented
+### ❌ Not Yet Implemented 🚧
 - Rotate left/right operations
 - Logarithm functions
 - Additional boolean operations
 
-## Building and Testing
+## Building and Testing 🔨
 
 ### Prerequisites
 - Clang compiler
@@ -91,14 +91,14 @@ make test
 make clean
 ```
 
-### Test Coverage
+### Test Coverage 🧪
 The project includes comprehensive unit tests:
 - `bin_tests.c` - Core functionality tests
 - `bitwise_tests.c` - Bitwise operation tests  
 - `math_tests.c` - Mathematical operation tests
 - `boolean_tests.c` - Boolean logic tests
 
-## Usage Example
+## Usage Example 💡
 
 ```c
 #include "src/bin.h"
@@ -125,7 +125,7 @@ int main() {
 }
 ```
 
-## Project Structure
+## Project Structure 📁
 
 ```
 libbin/
@@ -141,7 +141,7 @@ libbin/
 └── Makefile              # Build configuration
 ```
 
-## Educational Value
+## Educational Value 🎓
 
 This project demonstrates:
 - How computers perform arithmetic using only logical operations
@@ -150,7 +150,7 @@ This project demonstrates:
 - Comprehensive testing practices
 - Constraint-based programming challenges
 
-## Contributing
+## Contributing 🤝
 
 When adding new features:
 1. Follow the implementation constraints strictly
