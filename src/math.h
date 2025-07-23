@@ -15,7 +15,7 @@
  * @note This function performs standard binary addition with carry handling.
  *       The result is a binary number representing the arithmetic sum.
  */
-bin binAdd(bin x, bin y);
+bin binAdd(const bin x, const bin y);
 
 /**
  * @brief Increment a binary number by one
@@ -25,7 +25,7 @@ bin binAdd(bin x, bin y);
  * @note Don't try to increment the maximum binary number value.
  *       Currently this won't crash but it should.
  */
-bin binIncrement(bin x);
+bin binIncrement(const bin x);
 
 /**
  * @brief Subtract two binary numbers
@@ -40,7 +40,7 @@ bin binIncrement(bin x);
  * @note This function performs standard binary subtraction with borrow handling.
  *       If y > x, the result will be the two's complement representation.
  */
-bin binSubtract(bin x, bin y);
+bin binSubtract(const bin x, const bin y);
 
 /**
  * @brief Decrement a binary number by one
@@ -49,7 +49,7 @@ bin binSubtract(bin x, bin y);
  * 
  * @note Don't try to decrement the minimum binary number value (0).
  */
-bin binDecrement(bin x);
+bin binDecrement(const bin x);
 
 /**
  * @brief Multiply two binary numbers
@@ -61,7 +61,7 @@ bin binDecrement(bin x);
  * @param y The second binary number (multiplier)
  * @return The product of x and y as a binary number
  */
-bin binMultiply(bin x, bin y);
+bin binMultiply(const bin x, const bin y);
 
 /**
  * @brief Divide two binary numbers
@@ -75,7 +75,7 @@ bin binMultiply(bin x, bin y);
  * 
  * @note This function assert()s that the divisor is not zero.
  */
-bin binDivide(bin x, bin y);
+bin binDivide(const bin x, const bin y);
 
 /**
  * @brief Calculate the remainder of division
@@ -90,7 +90,7 @@ bin binDivide(bin x, bin y);
  * @note This function assert()s that the divisor is not zero.
  *       
  */
-bin binModulus(bin x, bin y);
+bin binModulus(const bin x, const bin y);
 
 /**
  * @brief Raise a binary number to a power
@@ -106,4 +106,4 @@ bin binModulus(bin x, bin y);
  *       For y = 1, the result is x.
  *       Large exponents may cause overflow.
  */
-bin binPow(bin x, bin y);
+bin binPow(const bin x, const bin y);

@@ -54,7 +54,7 @@ bool binEQOne(const bin x);
  * @param x The binary number to check
  * @return true if x equals the maximum value, false otherwise
  */
-bool binEQMax(bin x);
+bool binEQMax(const bin x);
 
 /**
  * @brief Check if two binary numbers are equal
@@ -62,7 +62,7 @@ bool binEQMax(bin x);
  * @param y Second binary number
  * @return true if x equals y, false otherwise
  */
-bool binEQ(bin x, bin y);
+bool binEQ(const bin x, const bin y);
 
 /**
  * @brief Check if one binary number is greater than another
@@ -70,7 +70,7 @@ bool binEQ(bin x, bin y);
  * @param y Second binary number
  * @return true if x > y, false otherwise
  */
-bool binGT(bin x, bin y);
+bool binGT(const bin x, const bin y);
 
 /**
  * @brief Check if one binary number is less than another
@@ -78,7 +78,7 @@ bool binGT(bin x, bin y);
  * @param y Second binary number
  * @return true if x < y, false otherwise
  */
-bool binLT(bin x, bin y);
+bool binLT(const bin x, const bin y);
 
 /**
  * @brief Check if one binary number is greater than or equal to another
@@ -86,7 +86,7 @@ bool binLT(bin x, bin y);
  * @param y Second binary number
  * @return true if x >= y, false otherwise
  */
-bool binGTEQ(bin x, bin y);
+bool binGTEQ(const bin x, const bin y);
 
 /**
  * @brief Check if one binary number is less than or equal to another
@@ -94,5 +94,5 @@ bool binGTEQ(bin x, bin y);
  * @param y Second binary number
  * @return true if x <= y, false otherwise
  */
-bool binLTEQ(bin x, bin y);
+bool binLTEQ(const bin x, const bin y);
 

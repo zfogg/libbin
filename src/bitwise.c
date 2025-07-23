@@ -2,7 +2,7 @@
 
 
 // Find the index of the most significant bit.
-bin binMSBi(bin x) {
+bin binMSBi(const bin x) {
     bin_int_t i = BIN_BITS-1;
     while (!x.bits[i] && i > 0)
         i--;
@@ -10,7 +10,7 @@ bin binMSBi(bin x) {
 }
 
 // Find the index of the least significant bit.
-bin binLSBi(bin x) {
+bin binLSBi(const bin x) {
     bin_int_t i = 0;
     while (!x.bits[i] && i < BIN_BITS-1)
         i++;
@@ -18,14 +18,14 @@ bin binLSBi(bin x) {
 }
 
 // Find the most significant bit.
-bin binMSB(bin x) {
+bin binMSB(const bin x) {
     if (binEQZero(x))
         return binZERO;
     return binShiftL(binONE, binDecrement(binMSBi(x)));
 }
 
 // Calculate the bitwise NOT of a binary number.
-bin binNOT(bin x) {
+bin binNOT(const bin x) {
     bin r = binZERO;
     for (bin_int_t i = 0; i < BIN_BITS; i++)
         r.bits[i] = !x.bits[i];
@@ -33,22 +33,26 @@ bin binNOT(bin x) {
 }
 
 // Shift a binary number left by another binary number.
-bin binShiftL(bin x, bin y) {
+bin binShiftL(const bin x, const bin y) {
     return binMultiply(x, binPow(binNew(2), y));
 }
 
 // Shift a binary number left by one.
-bin binShiftL1(bin x) {
-    return binShiftL(x, binONE);
+bin binShiftL1(const bin x) {
+    bin r = binZERO;
+    for (bin_int_t i = 1; i < BIN_BITS; i++) {
+        r.bits[i] = x.bits[i-1];
+    }
+    return r;
 }
 
 // Shift a binary number left until the most significant bit is one.
-bin binShiftOutZerosL(bin x) {
+bin binShiftOutZerosL(const bin x) {
     return binShiftL(x, binSubtract(binNew(BIN_BITS), binMSBi(x)));
 }
 
 // Shift a binary number right by another binary number.
-bin binShiftR(bin x, bin y) {
+bin binShiftR(const bin x, const bin y) {
     if (binEQZero(y))
         return x;
 
@@ -60,19 +64,19 @@ bin binShiftR(bin x, bin y) {
 }
 
 // Shift a binary number right by one.
-bin binShiftR1(bin x) {
+bin binShiftR1(const bin x) {
     return binShiftR(x, binONE);
 }
 
 // Shift a binary number right until the least significant bit is one.
-bin binShiftOutZerosR(bin x) {
+bin binShiftOutZerosR(const bin x) {
     if (binEQZero(x))
         return binZERO;
     return binShiftR(x, binDecrement(binLSBi(x)));
 }
 
 // Calculate the bitwise AND of two binary numbers.
-bin binAND(bin x, bin y) {
+bin binAND(const bin x, const bin y) {
     bin r = binZERO;
     for (bin_int_t i = 0; i < BIN_BITS; i++)
         if (x.bits[i] && y.bits[i])
@@ -81,7 +85,7 @@ bin binAND(bin x, bin y) {
 }
 
 // Calculate the bitwise OR of two binary numbers.
-bin binOR(bin x, bin y) {
+bin binOR(const bin x, const bin y) {
     bin r = binZERO;
     for (bin_int_t i = 0; i < BIN_BITS; i++)
         if (x.bits[i] || y.bits[i])
@@ -90,7 +94,7 @@ bin binOR(bin x, bin y) {
 }
 
 // Calculate the bitwise XOR of two binary numbers.
-bin binXOR(bin x, bin y) {
+bin binXOR(const bin x, const bin y) {
     bin r = binZERO;
     for (bin_int_t i = 0; i < BIN_BITS; i++)
         if ((x.bits[i] || y.bits[i])

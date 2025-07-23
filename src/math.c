@@ -3,64 +3,67 @@
 
 
 // Add two binary numbers.
-bin binAdd(bin x, bin y) {
+bin binAdd(const bin x, const bin y) {
     bin r = binZERO;
-    for (bin_int_t i = 0, carry = 0; i < BIN_BITS; i++) {
-        if (!carry && ((x.bits[i] && !y.bits[i])
-                    || (!x.bits[i] && y.bits[i]))) {
-            r.bits[i] = 1;
-        } else if (!carry && x.bits[i] && y.bits[i]) {
-            carry = 1;
-        } else if (carry && !x.bits[i] && !y.bits[i]) {
-            carry = 0;
-            r.bits[i] = 1;
-        } else if (carry && x.bits[i] && y.bits[i]) {
-            r.bits[i] = 1;
-        }
+    bin_int_t carry = 0;
+    
+    for (bin_int_t i = 0; i < BIN_BITS; i++) {
+        bin_int_t sum = x.bits[i] + y.bits[i] + carry;
+        r.bits[i] = sum & 1;  // Extract least significant bit
+        carry = sum >> 1;     // Extract carry bit
     }
+    
     return r;
 }
 
 
 // Increment a binary number. Do not increment the maximum value.
-bin binIncrement(bin x) {
-    // FIXME: this assertion should pass, but it doesn't. Check binMSB.
-    // assert(!binEQMax(x));
+bin binIncrement(const bin x) {
     return binAdd(x, binONE);
 }
 
 
 // Subtract two binary numbers.
-bin binSubtract(bin x, bin y) {
+bin binSubtract(const bin x, const bin y) {
     return binAdd(x, binIncrement(binNOT(y)));
 }
 
 
 // Decrement a binary number. Do not decrement zero.
-bin binDecrement(bin x) {
+bin binDecrement(const bin x) {
     assert(!binEQ(x, binZERO));
     return binSubtract(x, binONE);
 }
 
 
 // Multiply two binary numbers.
-bin binMultiply(bin x, bin y) {
+bin binMultiply(const bin x, const bin y) {
     if (binEQZero(y))
         return binZERO;
     else if (binEQOne(y))
         return x;
-    return binAdd(x, binMultiply(x, binDecrement(y)));
+    // Use binary multiplication algorithm (similar to long multiplication)
+    // For each bit in the multiplier, if it's 1, add the shifted multiplicand
+    bin result = binZERO;
+    bin multiplicand = x;
+    for (bin_int_t i = 0; i < BIN_BITS; i++) {
+        if (y.bits[i]) {
+            result = binAdd(result, multiplicand);
+        }
+        multiplicand = binShiftL1(multiplicand);
+    }
+    return result;
 }
 
 
 // Divide two binary numbers. Do not divide by zero.
-bin binDivide(bin numerator, bin denominator) {
+bin binDivide(const bin numerator, const bin denominator) {
     assert(!binEQZero(denominator));
 
     bin quotient  = binZERO,
         remainder = binZERO;
 
-    for (bin_int_t i = BIN_BITS-1; i != (bin_int_t)(-1); --i) {
+    for (int i = BIN_BITS-1; i >= 0; --i) {
         remainder = binShiftL1(remainder);
         remainder.bits[0] = numerator.bits[i];
 
@@ -75,18 +78,47 @@ bin binDivide(bin numerator, bin denominator) {
 
 
 // Calculate the modulus of two binary numbers. Do not modulus by zero.
-bin binModulus(bin x, bin y) {
+bin binModulus(const bin x, const bin y) {
     assert(!binEQZero(y));
     if (binLT(x, y))
         return x;
-    return binSubtract(x, binMultiply(y, binDivide(x, y)));
+    
+    // Use the same algorithm as division but return remainder instead
+    bin remainder = binZERO;
+    
+    for (int i = BIN_BITS-1; i >= 0; --i) {
+        remainder = binShiftL1(remainder);
+        remainder.bits[0] = x.bits[i];
+        
+        if (binGTEQ(remainder, y)) {
+            remainder = binSubtract(remainder, y);
+        }
+    }
+    
+    return remainder;
 }
 
 
 // Calculate the power of two binary numbers.
-bin binPow(bin x, bin y) {
+bin binPow(const bin x, const bin y) {
     if (binEQZero(y))
         return binONE;
-    return binMultiply(x, binPow(x, binDecrement(y)));
+    if (binEQOne(y))
+        return x;
+    
+    // Use binary exponentiation (square and multiply)
+    bin result = binONE;
+    bin base = x;
+    bin exponent = y;
+    
+    while (!binEQZero(exponent)) {
+        if (exponent.bits[0]) {  // If least significant bit is 1
+            result = binMultiply(result, base);
+        }
+        base = binMultiply(base, base);
+        exponent = binShiftR1(exponent);
+    }
+    
+    return result;
 }
 

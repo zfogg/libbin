@@ -54,7 +54,9 @@ void binMultiply_test() {
     for (bin_int_t i = 0; i < BIN_INT_MAX; ++i) {
         bin b1        = binRand();
         bin_int_t bi1 = binToInt(b1);
-        bin b2        = binRandr(0, BIN_INT_MAX / bi1);
+        // Avoid division by zero and ensure no overflow
+        bin_int_t max_b2 = (bi1 == 0) ? BIN_INT_MAX : BIN_INT_MAX / bi1;
+        bin b2        = binRandr(0, max_b2);
         bin_int_t bi2 = binToInt(b2);
         r &= (bin_int_t)(bi1 * bi2) == binToInt(binMultiply(b1, b2));
     }

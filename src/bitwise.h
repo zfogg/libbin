@@ -7,28 +7,28 @@
  * @param x The binary value to analyze
  * @return The index of the most significant bit
  */
-bin binMSBi(bin x);
+bin binMSBi(const bin x);
 
 /**
  * @brief Returns the value of the index of the least significant bit
  * @param x The binary value to analyze
  * @return The index of the least significant bit
  */
-bin binLSBi(bin x);
+bin binLSBi(const bin x);
 
 /**
  * @brief Returns the value of the most significant bit
  * @param x The binary value to analyze
  * @return The value of the most significant bit
  */
-bin binMSB(bin x);
+bin binMSB(const bin x);
 
 /**
  * @brief Negates a value
  * @param x The binary value to negate
  * @return The negated value
  */
-bin binNOT(bin x);
+bin binNOT(const bin x);
 
 /**
  * @brief Performs left bit shift
@@ -36,21 +36,21 @@ bin binNOT(bin x);
  * @param y The number of positions to shift left
  * @return The shifted value
  */
-bin binShiftL(bin x, bin y);
+bin binShiftL(const bin x, const bin y);
 
 /**
  * @brief Performs left bit shift by one
  * @param x The binary value to shift
  * @return The value shifted left by one position
  */
-bin binShiftL1(bin x);
+bin binShiftL1(const bin x);
 
 /**
  * @brief Performs left bit shift until all the highest bit is set
  * @param x The binary value to shift
  * @return The value with zeros shifted out from the left
  */
-bin binShiftOutZerosL(bin x);
+bin binShiftOutZerosL(const bin x);
 
 /**
  * @brief Performs right bit shift
@@ -58,21 +58,21 @@ bin binShiftOutZerosL(bin x);
  * @param y The number of positions to shift right
  * @return The shifted value
  */
-bin binShiftR(bin x, bin y);
+bin binShiftR(const bin x, const bin y);
 
 /**
  * @brief Performs right bit shift by one
  * @param x The binary value to shift
  * @return The value shifted right by one position
  */
-bin binShiftR1(bin x);
+bin binShiftR1(const bin x);
 
 /**
  * @brief Performs right bit shift until all the lowest bit is set
  * @param x The binary value to shift
  * @return The value with zeros shifted out from the right
  */
-bin binShiftOutZerosR(bin x);
+bin binShiftOutZerosR(const bin x);
 
 /**
  * @brief Performs AND logic gate operation
@@ -80,7 +80,7 @@ bin binShiftOutZerosR(bin x);
  * @param y The second binary operand
  * @return The result of x AND y
  */
-bin binAND(bin x, bin y);
+bin binAND(const bin x, const bin y);
 
 /**
  * @brief Performs OR logic gate operation
@@ -88,7 +88,7 @@ bin binAND(bin x, bin y);
  * @param y The second binary operand
  * @return The result of x OR y
  */
-bin binOR(bin x, bin y);
+bin binOR(const bin x, const bin y);
 
 /**
  * @brief Performs XOR logic gate operation
@@ -96,5 +96,5 @@ bin binOR(bin x, bin y);
  * @param y The second binary operand
  * @return The result of x XOR y
  */
-bin binXOR(bin x, bin y);
+bin binXOR(const bin x, const bin y);
 
