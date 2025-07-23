@@ -2,38 +2,49 @@
 
 // Test if a binary number is zero.
 bool binEQZero(const bin x) {
-    for (bin_int_t i = 0; i < BIN_BITS; i++)
+    for (bin_int_t i = 0; i < BIN_BITS; i++) {
         if (x.bits[i])
             return false;
+    }
     return true;
 }
 
 // Test if a binary number is one.
 bool binEQOne(const bin x) {
-    if (binEQZero(x))
+    // Check if the least significant bit is 1 and all others are 0
+    if (!x.bits[0])
         return false;
-    return binEQZero(binDecrement(x));
+    for (bin_int_t i = 1; i < BIN_BITS; i++) {
+        if (x.bits[i])
+            return false;
+    }
+    return true;
 }
 
 // Test if a binary number is the maximum value.
 bool binEQMax(const bin x) {
-    int r = 1;
-    for (bin_int_t i = 0; i < BIN_BITS; i++)
-        r &= x.bits[i] == 1;
-    return r == 1;
+    for (bin_int_t i = 0; i < BIN_BITS; i++) {
+        if (!x.bits[i])
+            return false;
+    }
+    return true;
 }
 
 // Test if two binary numbers are equal.
 bool binEQ(const bin x, const bin y) {
-    return binEQZero(binSubtract(x, y));
+    for (bin_int_t i = 0; i < BIN_BITS; i++) {
+        if (x.bits[i] != y.bits[i])
+            return false;
+    }
+    return true;
 }
 
 // Test if a binary number is greater than another.
 bool binGT(const bin x, const bin y) {
-    bin xorXY = binXOR(x, y);
-    for (int i = BIN_BITS-1; i >= 0; --i)
-        if (xorXY.bits[i])
+    for (int i = BIN_BITS-1; i >= 0; --i) {
+        if (x.bits[i] != y.bits[i])
             return x.bits[i] && !y.bits[i];
+    }
     return false;
 }
 
