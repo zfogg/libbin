@@ -47,6 +47,8 @@ The library follows strict implementation rules:
   - Left shift (`binShiftL`, `binShiftL1`)
   - Right shift (`binShiftR`, `binShiftR1`)
   - Shift out zeros (`binShiftOutZerosL`, `binShiftOutZerosR`)
+- **Rotate operations** (`binRotateL`, `binRotateR`): Rotate a numbers bits
+around left and right.
 
 #### Mathematical Operations (`src/math.h`) 🧮
 - **Addition** (`binAdd`, `binIncrement`)
@@ -69,7 +71,6 @@ The library follows strict implementation rules:
 
 ### ❌ Not Yet Implemented 🚧
 - Bitwise
-    - Rotate operations: binRotateLeft(), binRotateRight() - Circular bit shifting
     - Bit counting: binPopCount() - Count set bits (population count)
     - Bit scanning: binFindFirstSet(), binFindLastSet() - Find first/last set bit
 - Math
