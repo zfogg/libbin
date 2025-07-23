@@ -13,8 +13,9 @@ bin binMSBi(const bin x) {
 // Find the index of the least significant bit.
 bin binLSBi(const bin x) {
     bin_int_t i = 0;
-    while (!x.bits[i] && i < BIN_BITS-1)
+    while (!x.bits[i] && i < BIN_BITS-1) {
         i++;
+    }
     return binIncrement(binNew(i));
 }
 
@@ -28,8 +29,9 @@ bin binMSB(const bin x) {
 // Calculate the bitwise NOT of a binary number.
 bin binNOT(const bin x) {
     bin r = binZERO;
-    for (bin_int_t i = 0; i < BIN_BITS; i++)
+    for (bin_int_t i = 0; i < BIN_BITS; i++) {
         r.bits[i] = !x.bits[i];
+    }
     return r;
 }
 
@@ -37,11 +39,9 @@ bin binNOT(const bin x) {
 bin binShiftL(const bin x, const bin y) {
     if (binEQZero(y))
         return x;
-    
     bin_int_t shift_amount = binToInt(y);
     if (shift_amount >= BIN_BITS)
         return binZERO;  // Shift by BIN_BITS or more results in zero
-    
     bin r = binZERO;
     for (bin_int_t i = 0; i < BIN_BITS - shift_amount; i++) {
         r.bits[i + shift_amount] = x.bits[i];
@@ -104,23 +104,26 @@ bin binShiftOutZerosR(const bin x) {
 // Calculate the bitwise AND of two binary numbers.
 bin binAND(const bin x, const bin y) {
     bin r = binZERO;
-    for (bin_int_t i = 0; i < BIN_BITS; i++)
+    for (bin_int_t i = 0; i < BIN_BITS; i++) {
         r.bits[i] = x.bits[i] && y.bits[i];
+    }
     return r;
 }
 
 // Calculate the bitwise OR of two binary numbers.
 bin binOR(const bin x, const bin y) {
     bin r = binZERO;
-    for (bin_int_t i = 0; i < BIN_BITS; i++)
+    for (bin_int_t i = 0; i < BIN_BITS; i++) {
         r.bits[i] = x.bits[i] || y.bits[i];
+    }
     return r;
 }
 
 // Calculate the bitwise XOR of two binary numbers.
 bin binXOR(const bin x, const bin y) {
     bin r = binZERO;
-    for (bin_int_t i = 0; i < BIN_BITS; i++)
+    for (bin_int_t i = 0; i < BIN_BITS; i++) {
         r.bits[i] = x.bits[i] != y.bits[i];
+    }
     return r;
 }
