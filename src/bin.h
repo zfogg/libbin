@@ -15,18 +15,53 @@
 #define CC_GREEN "\x1B[32m"
 
 
+/**
+ * @brief Create a binary number from an integer
+ * @param n The integer to convert
+ * @return A binary number representation
+ */
 bin binNew(bin_int_t n);
 
+/**
+ * @brief Convert a binary number to an integer
+ * @param x The binary number to convert
+ * @return The integer representation
+ */
+bin_int_t binToInt(const bin x);
 
-bin_int_t binToInt(bin x);
+/**
+ * @brief Print a binary number to stdout
+ * @param x The binary number to print
+ */
+void binPrint(const bin x);
 
-
-void binPrint(bin x);
-
+/**
+ * @brief Print an integer to stdout
+ * @param x The integer to print
+ */
 void binIntPrint(bin_int_t x);
 
+/**
+ * @brief Print two integers to stdout
+ * @param bi1 First integer
+ * @param bi2 Second integer
+ */
 void binIntPrint2(bin_int_t bi1, bin_int_t bi2);
 
 
-bin_int_t randr(bin_int_t min, bin_int_t max);
+// Random number generation
+
+/**
+ * @brief Generate a random binary number
+ * @return A random binary number
+ */ 
+bin binRand(void);
+
+/**
+ * @brief Generate a random binary number between two values
+ * @param min The minimum value
+ * @param max The maximum value
+ * @return A random binary number between two values
+ */ 
+bin binRandr(bin_int_t min, bin_int_t max);
 

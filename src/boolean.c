@@ -4,14 +4,14 @@
 bool binEQZero(bin x) {
     for (bin_int_t i = 0; i < BIN_BITS; i++)
         if (x.bits[i])
-            return FALSE;
-    return TRUE;
+            return false;
+    return true;
 }
 
 // Test if a binary number is one.
 bool binEQOne(bin x) {
     if (binEQZero(x))
-        return FALSE;
+        return false;
     return binEQZero(binDecrement(x));
 }
 
@@ -34,7 +34,7 @@ bool binGT(bin x, bin y) {
     for (bin_int_t i = BIN_BITS-1; i != (bin_int_t)(-1); --i)
         if (xorXY.bits[i])
             return x.bits[i] && !y.bits[i];
-    return FALSE;
+    return false;
 }
 
 // Test if a binary number is less than another.

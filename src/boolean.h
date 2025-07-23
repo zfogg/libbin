@@ -1,13 +1,8 @@
 #pragma once
 
+#include <stdbool.h>
 #include "bin.h"
 
-
-typedef bin_int_t bool;
-
-
-#define TRUE  0x01
-#define FALSE 0x00
 
 #define boolToString(b) ((b) ? "TRUE" : "FALSE")
 
@@ -15,9 +10,9 @@ typedef bin_int_t bool;
 #define binMax(a,b) (binGT((a),(b)) ? (a) : (b))
 
 
-bool binEQZero(bin x);
+bool binEQZero(const bin x);
 
-bool binEQOne(bin x);
+bool binEQOne(const bin x);
 
 bool binEQMax(bin x);
 

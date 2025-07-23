@@ -1,4 +1,6 @@
 #include "bin.h"
+#include <stdbool.h>
+#include <time.h>
 
 
 // Create a binary number from an integer.
@@ -10,7 +12,7 @@ bin binNew(bin_int_t n) {
 }
 
 // Convert a binary number to an integer.
-bin_int_t binToInt(bin x) {
+bin_int_t binToInt(const bin x) {
     bin_int_t r = 0;
     for (bin_int_t i = 0; i < BIN_BITS; i++)
         r |= x.bits[i] << i;
@@ -25,7 +27,7 @@ void textcolor(int attr, int fg, int bg) {
 }
 
 // Print a binary number to the terminal.
-void binPrint(bin x) {
+void binPrint(const bin x) {
     for (bin_int_t i = 0; i < BIN_BITS; i++) {
         printf("%c", x.bits[BIN_BITS - 1 - i] ? 'X' : 'o');
         if ((i+1) % 4 == 0) // Print human-parsable chunks.
@@ -49,8 +51,23 @@ void binIntPrint2(bin_int_t bi1, bin_int_t bi2) {
 }
 
 // Generate a random integer between two values.
-bin_int_t randr(bin_int_t min, bin_int_t max) {
+static bin_int_t randr(bin_int_t min, bin_int_t max) {
        double scaled = (double)rand()/RAND_MAX;
        return (max - min + 1)*scaled + min;
+}
+
+// Generate a random // Generate a random binary number.
+bin binRand(void) {
+    return binNew(rand() % (BIN_INT_MAX + 1));
+}
+
+// Generate a random binary number between two values.
+bin binRandr(bin_int_t min, bin_int_t max) {
+    if (min > max) {
+        bin_int_t temp = min;
+        min = max;
+        max = temp;
+    }
+    return binNew(randr(min, max));
 }
 

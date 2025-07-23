@@ -10,16 +10,3 @@ void processTestResults(const char* testName, const bin_int_t results) {
     printf(format, testName, color, text, CC_RESET);
     fflush(stdout);
 }
-
-
-// Generate a random binary number between two values.
-bin binRandr(bin_int_t min, bin_int_t max) {
-    return binNew(randr(min, max));
-}
-
-
-// Generate a random binary number.
-bin binRand() {
-    return binRandr(0, binToInt(binMAX));
-}
-
