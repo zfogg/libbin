@@ -30,6 +30,14 @@ bin binNew(bin_int_t n);
 bin_int_t binToInt(const bin x);
 
 /**
+ * @brief Change the foreground and background colors of the terminal for when you next print text.
+ * @param attr The attribute to use (0 = normal, 1 = bold, 2 = dim, 3 = italic, 4 = underline, 5 = blink, 6 = reverse, 7 = hidden)
+ * @param fg The foreground color to use (0 = black, 1 = red, 2 = green, 3 = yellow, 4 = blue, 5 = magenta, 6 = cyan, 7 = white)
+ * @param bg The background color to use (0 = black, 1 = red, 2 = green, 3 = yellow, 4 = blue, 5 = magenta, 6 = cyan, 7 = white)
+ */
+void textcolor(int attr, int fg, int bg);
+
+/**
  * @brief Print a binary number to stdout
  * @param x The binary number to print
  */
