@@ -8,7 +8,7 @@ TEST_D = test
 
 # Compiler and flags
 CC = clang
-CFLAGS = -std=c23 -Wextra -Wall -O2 -g 
+CFLAGS = -std=c2x -Wextra -Wall -O2 -g 
 CFLAGS_DEBUG = -std=c2x -Wextra -Wall -Wpedantic -Wconversion -Wshadow -O0 -g3 -DDEBUG
 CFLAGS_COVERAGE = $(CFLAGS_DEBUG) --coverage
 CFLAGS_ASAN = $(CFLAGS_DEBUG) -fsanitize=address -fno-omit-frame-pointer
