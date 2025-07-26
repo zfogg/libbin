@@ -13,37 +13,37 @@ jobs:
   test:
     name: Test and Analysis
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y clang cppcheck valgrind
-        
+
     - name: Build and test (optimized)
       run: |
         make clean
         make test
-        
+
     - name: Build and test (debug)
       run: |
         make test-debug
-        
+
     - name: Test with AddressSanitizer
       run: |
         make test-asan
-        
+
     - name: Run static analysis (cppcheck)
       run: |
         make check-cppcheck
-        
+
     - name: Generate coverage report
       run: |
         make coverage
-        
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
@@ -54,21 +54,21 @@ jobs:
   memory-check:
     name: Memory Safety Check
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y clang valgrind
-        
+
     - name: Build for memory testing
       run: |
         make clean
         make test-debug
-        
+
     - name: Run tests with Valgrind
       run: |
         valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1 ./bin/bin_tests_debug
@@ -82,24 +82,24 @@ jobs:
         exclude:
           - os: macos-latest
             compiler: gcc
-            
+
     runs-on: ${{ matrix.os }}
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Install dependencies (Linux)
       if: runner.os == 'Linux'
       run: |
         sudo apt-get update
         sudo apt-get install -y ${{ matrix.compiler }}
-        
+
     - name: Install dependencies (macOS)
       if: runner.os == 'macOS'
       run: |
         brew install llvm cppcheck
-        
+
     - name: Build and test
       env:
         CC: ${{ matrix.compiler }}
@@ -110,34 +110,18 @@ jobs:
   lint:
     name: Code Quality
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Install clang-tidy
       run: |
         sudo apt-get update
         sudo apt-get install -y clang-tidy
-        
+
     - name: Run clang-tidy
       run: |
         export PATH="/usr/bin:$PATH"
         clang-tidy src/*.c -- -std=c2x -Isrc
 
-  documentation:
-    name: Documentation Check
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Install doxygen
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y doxygen graphviz
-        
-    - name: Generate documentation
-      run: |
-        doxygen Doxyfile || echo "Doxyfile not found, skipping documentation generation" 
