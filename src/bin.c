@@ -54,20 +54,11 @@ static bin_int_t randr(bin_int_t min, bin_int_t max) {
 #ifdef __APPLE__
     // macOS has arc4random_uniform
     double scaled = (double)arc4random_uniform(UINT32_MAX) / UINT32_MAX;
-#elif defined(__linux__)
-    // Linux alternative
-    uint32_t random_val;
-    if (getrandom(&random_val, sizeof(random_val), 0) == sizeof(random_val)) {
-        double scaled = (double)random_val / UINT32_MAX;
-    } else {
-        // Fallback to rand()
-        double scaled = (double)rand() / RAND_MAX;
-    }
 #else
     // Generic fallback
     double scaled = (double)rand() / RAND_MAX;
 #endif
-       return (max - min + 1)*scaled + min;
+    return (max - min + 1)*scaled + min;
 }
 
 // Generate a random binary number between two values.
