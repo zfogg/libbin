@@ -21,7 +21,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y clang cppcheck valgrind
+        sudo apt-get install -y clang cppcheck valgrind llvm
 
     - name: Build and test (optimized)
       run: |
@@ -62,7 +62,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y clang valgrind
+        sudo apt-get install -y clang valgrind llvm
 
     - name: Build for memory testing
       run: |
@@ -118,7 +118,7 @@ jobs:
     - name: Install clang-tidy
       run: |
         sudo apt-get update
-        sudo apt-get install -y clang-tidy
+        sudo apt-get install -y clang-tidy llvm
 
     - name: Run clang-tidy
       run: |
