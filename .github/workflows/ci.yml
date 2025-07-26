@@ -123,7 +123,7 @@ jobs:
     - name: Run clang-tidy
       run: |
         export PATH="/usr/bin:$PATH"
-        clang-tidy src/*.c -- -std=c23 -Isrc
+        clang-tidy src/*.c -- -std=c2x -Isrc
 
   documentation:
     name: Documentation Check

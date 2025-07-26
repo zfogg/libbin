@@ -98,7 +98,7 @@ check-tidy:
 
 check-cppcheck:
 	@echo "Running cppcheck static analysis..."
-	$(CPPCHECK) --enable=all --std=c23 --inline-suppr --suppress=missingIncludeSystem $(SRC_D)/
+	$(CPPCHECK) --enable=all --std=c2x --inline-suppr --suppress=missingIncludeSystem $(SRC_D)/
 
 # Coverage report
 coverage: test-coverage
