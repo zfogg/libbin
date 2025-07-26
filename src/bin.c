@@ -45,14 +45,13 @@ void binIntPrint(bin_int_t bi) {
 
 // Print two integers to the terminal.
 void binIntPrint2(bin_int_t bi1, bin_int_t bi2) {
-    const char* format = "%"PRINTF_BIN_INT" :: %"PRINTF_BIN_INT"\n";
-    printf(format, bi1, bi2);
+    printf("%" PRINTF_BIN_INT " :: %" PRINTF_BIN_INT "\n", bi1, bi2);
     fflush(stdout);
 }
 
 // Generate a random integer between two values.
 static bin_int_t randr(bin_int_t min, bin_int_t max) {
-       double scaled = (double)rand()/RAND_MAX;
+       double scaled = (double)arc4random_uniform(UINT32_MAX) / UINT32_MAX;
        return (max - min + 1)*scaled + min;
 }
 
