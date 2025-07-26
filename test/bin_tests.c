@@ -7,7 +7,7 @@ bin_int_t bin_testResults = 1;
 
 int main(int argc, char* argv[]) {
     (void)(argc); (void)(argv);
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
 
     // puts("");
     binMSBi_test            ();

@@ -22,7 +22,7 @@ bin binAdd(const bin x, const bin y) {
     //     puts("");
     //     // abort();
     // }
-    
+
     return r;
 }
 
@@ -263,18 +263,18 @@ bin binLog(const bin _x) {
   // exp = 127 for x = 1,
   // so 2^(exp-127) is the multiplier
 
-  // evil floating point bit level hacking
-  unsigned int bx = *(unsigned int *)(&x);
+  // IEEE 754 floating point bit level manipulation using union for safe type punning
+  union { float f; unsigned int i; } fx = { .f = x };
 
   // extract exp, since x>0, sign bit must be 0
-  unsigned int ex = bx >> 23;
+  unsigned int ex = fx.i >> 23;
   signed int t = (signed int)ex - (signed int)127;
 
   // reinterpret back to float
   //   127 << 23 = 1065353216
   //   0b11111111111111111111111 = 8388607
-  bx = 1065353216 | (bx & 8388607);
-  x = *(float *)(&bx);
+  fx.i = 1065353216 | (fx.i & 8388607);
+  x = fx.f;
 
   // use remez algorithm to find approximation between [1,2]
   // - see this answer https://stackoverflow.com/a/44232045

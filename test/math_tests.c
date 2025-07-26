@@ -142,3 +142,4 @@ void binLogTest() {
     }
     processTestResults("binLog", r);
 }
+

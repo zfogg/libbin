@@ -45,15 +45,20 @@ void binIntPrint(bin_int_t bi) {
 
 // Print two integers to the terminal.
 void binIntPrint2(bin_int_t bi1, bin_int_t bi2) {
-    const char* format = "%"PRINTF_BIN_INT" :: %"PRINTF_BIN_INT"\n";
-    printf(format, bi1, bi2);
+    printf("%" PRINTF_BIN_INT " :: %" PRINTF_BIN_INT "\n", bi1, bi2);
     fflush(stdout);
 }
 
 // Generate a random integer between two values.
 static bin_int_t randr(bin_int_t min, bin_int_t max) {
-       double scaled = (double)rand()/RAND_MAX;
-       return (max - min + 1)*scaled + min;
+#ifdef __APPLE__
+    // macOS has arc4random_uniform
+    double scaled = (double)arc4random_uniform(UINT32_MAX) / UINT32_MAX;
+#else
+    // Generic fallback
+    double scaled = (double)rand() / RAND_MAX;
+#endif
+    return (max - min + 1)*scaled + min;
 }
 
 // Generate a random binary number between two values.
