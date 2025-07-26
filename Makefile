@@ -8,16 +8,17 @@ TEST_D = test
 
 # Compiler and flags
 CC = clang
-CFLAGS = -std=c23 -Wextra -Wall -O2 -g
+CFLAGS = -std=c23 -Wextra -Wall -O2 -g 
 CFLAGS_DEBUG = -std=c23 -Wextra -Wall -Wpedantic -Wconversion -Wshadow -O0 -g3 -DDEBUG
 CFLAGS_COVERAGE = $(CFLAGS_DEBUG) --coverage
 CFLAGS_ASAN = $(CFLAGS_DEBUG) -fsanitize=address -fno-omit-frame-pointer
 CFLAGS_SHARED = -fpic
-LDFLAGS = 
-LDFLAGS_SHARED = -shared
-LDFLAGS_TEST = -L$(OUT_D)
-LDFLAGS_COVERAGE = --coverage
-LDFLAGS_ASAN = -fsanitize=address
+
+LDFLAGS          = -lm
+LDFLAGS_SHARED   = $(LDFLAGS) -shared
+LDFLAGS_TEST     = $(LDFLAGS) -L$(OUT_D)
+LDFLAGS_COVERAGE = $(LDFLAGS) --coverage
+LDFLAGS_ASAN     = $(LDFLAGS) -fsanitize=address
 
 # Static analysis tools
 CLANG_TIDY = /opt/homebrew/opt/llvm/bin/clang-tidy
@@ -120,10 +121,10 @@ $(TARGET): $(OBJECTS) | $(OUT_D)
 
 # Test executables
 $(TESTS): $(TEST_OBJECTS) $(OBJECTS) | $(BIN_D)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS_TEST) -l$(T)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS_TEST)
 
 $(TESTS_DEBUG): $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-debug.o, $(TEST_SOURCES)) $(patsubst $(SRC_D)/%.c, $(OUT_D)/%-debug.o, $(SOURCES)) | $(BIN_D)
-	$(CC) $(CFLAGS_DEBUG) $^ -o $@
+	$(CC) $(CFLAGS_DEBUG) $^ -o $@ $(LDFLAGS)
 
 $(TESTS_COVERAGE): $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-coverage.o, $(TEST_SOURCES)) $(patsubst $(SRC_D)/%.c, $(OUT_D)/%-coverage.o, $(SOURCES)) | $(BIN_D)
 	$(CC) $(CFLAGS_COVERAGE) $^ -o $@ $(LDFLAGS_COVERAGE)
