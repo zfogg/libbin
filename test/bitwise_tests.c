@@ -193,3 +193,4 @@ void binRotateR_test() {
     }
     processTestResults("binRotateR", r);
 }
+
