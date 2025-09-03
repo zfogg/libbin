@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*'
 
+env:
+  CSTD: c2x
+  MAKEFLAGS: "-j"
+
 jobs:
   release:
     name: Create Release
@@ -21,8 +25,7 @@ jobs:
 
     - name: Build release artifacts
       run: |
-        make clean
-        make
+        make release
         mkdir -p artifacts
         cp build/libbin.so artifacts/
         cp -r src/*.h artifacts/

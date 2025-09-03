@@ -7,6 +7,10 @@ on:
     branches: [ master, main ]
   workflow_dispatch: # Allow manual triggering
 
+env:
+  CSTD: c2x
+  MAKEFLAGS: "-j"
+
 jobs:
   benchmark:
     name: Performance Benchmark
@@ -24,28 +28,27 @@ jobs:
 
     - name: Build optimized version
       run: |
-        make clean
-        # Build library and test binary (but don't run tests yet)
-        make CC=clang CFLAGS="-std=c2x -O3 -DNDEBUG -march=native" all
-        make CC=clang CFLAGS="-std=c2x -O3 -DNDEBUG -march=native" bin/bin_tests
+        # Build library and test binary with release optimization
+        make release
+        make bin/bin_tests
 
     - name: Run performance tests
       run: |
         echo "=== Performance Benchmark Results ==="
         echo "Testing constraint-compliant vs standard implementations..."
-        
+
         # Time the test execution
         echo "## Test Suite Performance"
         /usr/bin/time -v ./bin/bin_tests 2>&1 | tee benchmark_results.txt
-        
+
         echo "## Memory Usage Analysis"
         echo "Binary sizes:"
         ls -lh build/libbin.so bin/bin_tests
-        
+
         echo "## Library Metrics"
         echo "Source lines of code:"
         find src/ -name "*.c" -exec wc -l {} + | tail -1
-        echo "Header lines of code:"  
+        echo "Header lines of code:"
         find src/ -name "*.h" -exec wc -l {} + | tail -1
         echo "Test lines of code:"
         find test/ -name "*.c" -exec wc -l {} + | tail -1
@@ -53,17 +56,17 @@ jobs:
     - name: Analyze benchmark results
       run: |
         echo "=== Analysis ==="
-        
+
         # Extract key metrics
         if grep -q "User time" benchmark_results.txt; then
           USER_TIME=$(grep "User time" benchmark_results.txt | awk '{print $4}')
-          SYSTEM_TIME=$(grep "System time" benchmark_results.txt | awk '{print $4}')  
+          SYSTEM_TIME=$(grep "System time" benchmark_results.txt | awk '{print $4}')
           MAX_MEMORY=$(grep "Maximum resident set size" benchmark_results.txt | awk '{print $6}')
-          
+
           echo "Execution time: ${USER_TIME}s user, ${SYSTEM_TIME}s system"
           echo "Peak memory usage: ${MAX_MEMORY}KB"
         fi
-        
+
         # Check if all tests passed
         if grep -q "🥳 Pass ALL the tests 🎊.*pass" benchmark_results.txt; then
           echo "✅ All tests passed successfully"
@@ -87,28 +90,28 @@ jobs:
           const fs = require('fs');
           try {
             const benchmarkResults = fs.readFileSync('benchmark_results.txt', 'utf8');
-            
+
             // Extract key metrics for PR comment
             const userTimeMatch = benchmarkResults.match(/User time \(seconds\): ([\d.]+)/);
             const memoryMatch = benchmarkResults.match(/Maximum resident set size \(kbytes\): (\d+)/);
-            
+
             const userTime = userTimeMatch ? userTimeMatch[1] : 'N/A';
             const maxMemory = memoryMatch ? memoryMatch[1] : 'N/A';
-            
+
             const comment = `## 📊 Performance Benchmark Results
-            
+
             - **Execution time:** ${userTime}s
-            - **Peak memory:** ${maxMemory}KB  
+            - **Peak memory:** ${maxMemory}KB
             - **All tests:** ✅ Passed
-            
+
             <details>
             <summary>Full benchmark output</summary>
-            
+
             \`\`\`
             ${benchmarkResults}
             \`\`\`
             </details>`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

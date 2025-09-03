@@ -10,6 +10,10 @@ on:
     - cron: '0 2 * * 0'
   workflow_dispatch:
 
+env:
+  CSTD: c2x
+  MAKEFLAGS: "-j"
+
 jobs:
   security-audit:
     name: Security Analysis
@@ -27,8 +31,7 @@ jobs:
 
     - name: Build with all warnings
       run: |
-        make clean
-        make CC=clang CFLAGS="-std=c2x -Wextra -Wall -Wpedantic -Wconversion -Wshadow -Wformat-security -Wstrict-prototypes -Wmissing-prototypes -O2 -g" all
+        make debug
 
     - name: Run comprehensive static analysis
       run: |
@@ -36,9 +39,7 @@ jobs:
 
         # Run cppcheck with security checks
         echo "## CPPCheck Security Analysis"
-        cppcheck --enable=all --std=c2x --inline-suppr --suppress=missingIncludeSystem \
-          --check-level=exhaustive --inconclusive --platform=unix64 \
-          --error-exitcode=1 src/ || echo "CPPCheck found issues (non-fatal)"
+        make check-cppcheck || echo "CPPCheck found issues (non-fatal)"
 
         echo "## Clang Static Analyzer"
         clang --analyze -Xanalyzer -analyzer-output=text \
@@ -54,7 +55,7 @@ jobs:
 
         # Build and test with UBSan if available
         echo "## UndefinedBehaviorSanitizer"
-        if make CC=clang CFLAGS_DEBUG="-std=c2x -fsanitize=undefined -fno-omit-frame-pointer -O0 -g3" test-debug 2>/dev/null; then
+        if make test-ubsan 2>/dev/null; then
           echo "✅ UBSan tests passed"
         else
           echo "⚠️  UBSan not available or found issues"

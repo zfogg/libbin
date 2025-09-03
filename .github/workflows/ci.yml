@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ master, main ]
 
+env:
+  CSTD: c2x
+  MAKEFLAGS: "-j"
+
 jobs:
   test:
     name: Test and Analysis
@@ -23,11 +27,11 @@ jobs:
 
     - name: Build and test (optimized)
       run: |
-        make clean
         make test
 
     - name: Build and test (debug)
       run: |
+        make debug
         make test-debug
 
     - name: Test with AddressSanitizer
@@ -36,6 +40,7 @@ jobs:
 
     - name: Run static analysis
       run: |
+        make debug
         make check
 
     - name: Generate coverage report
@@ -65,18 +70,18 @@ jobs:
 
     - name: Build for memory testing
       run: |
-        make clean
-        make test-debug
+        make debug
 
     - name: Run tests with Valgrind
       run: |
         valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1 ./bin/bin_tests_debug
 
   cross-platform:
-    name: Cross-platform Build (${{ matrix.os }})
+    name: Cross-platform Build (${{ matrix.os }}) [${{ matrix.build_mode }}]
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
+        build_mode: [debug, release]
         include:
           - os: ubuntu-latest
             os-name: ubuntu
@@ -97,8 +102,8 @@ jobs:
 
     - name: Build and test
       run: |
-        make clean
-        make test
+        make ${{ matrix.build_mode }}
+        make test-${{ matrix.build_mode }}
 
     - name: Run static analysis
       run: |
