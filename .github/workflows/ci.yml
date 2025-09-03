@@ -49,7 +49,7 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./build/*.gcov
+        files: ./*.gcov
         fail_ci_if_error: true
         verbose: true
 
