@@ -25,7 +25,7 @@ jobs:
     - name: Build optimized version
       run: |
         make clean
-        make CC=clang CFLAGS="-std=c2x -O3 -DNDEBUG -march=native" all
+        make CC=clang CFLAGS="-std=c2x -O3 -DNDEBUG -march=native" bin/bin_tests
 
     - name: Run performance tests
       run: |
