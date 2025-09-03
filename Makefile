@@ -227,19 +227,19 @@ $(TARGET): $(OBJECTS) | $(OUT_D)
 	$(CC) $(CFLAGS) $(LDFLAGS_SHARED) $^ -o $@
 
 $(TARGET_DEBUG): $(patsubst $(SRC_D)/%.c, $(OUT_D)/%-debug.o, $(SOURCES)) | $(OUT_D)
-	$(CC) $(CFLAGS) $(DEBUG_FLAGS) $(LDFLAGS_SHARED) $^ -o $@
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) $(CFLAGS_SHARED) $(LDFLAGS_SHARED) $^ -o $@
 
 $(TARGET_RELEASE): $(patsubst $(SRC_D)/%.c, $(OUT_D)/%-release.o, $(SOURCES)) | $(OUT_D)
-	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $(LDFLAGS_SHARED) $^ -o $@
+	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $(CFLAGS_SHARED) $(LDFLAGS_SHARED) $^ -o $@
 
 $(TARGET_COVERAGE): $(patsubst $(SRC_D)/%.c, $(OUT_D)/%-coverage.o, $(SOURCES)) | $(OUT_D)
-	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) $(LDFLAGS_SHARED) $(LDFLAGS_COVERAGE) $^ -o $@
+	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) $(CFLAGS_SHARED) $(LDFLAGS_SHARED) $(LDFLAGS_COVERAGE) $^ -o $@
 
 $(TARGET_ASAN): $(patsubst $(SRC_D)/%.c, $(OUT_D)/%-asan.o, $(SOURCES)) | $(OUT_D)
-	$(CC) $(CFLAGS) $(ASAN_FLAGS) $(LDFLAGS_SHARED) $(LDFLAGS_ASAN) $^ -o $@
+	$(CC) $(CFLAGS) $(ASAN_FLAGS) $(CFLAGS_SHARED) $(LDFLAGS_SHARED) $(LDFLAGS_ASAN) $^ -o $@
 
 $(TARGET_UBSAN): $(patsubst $(SRC_D)/%.c, $(OUT_D)/%-ubsan.o, $(SOURCES)) | $(OUT_D)
-	$(CC) $(CFLAGS) $(UBSAN_FLAGS) $(LDFLAGS_SHARED) $(LDFLAGS_UBSAN) $^ -o $@
+	$(CC) $(CFLAGS) $(UBSAN_FLAGS) $(CFLAGS_SHARED) $(LDFLAGS_SHARED) $(LDFLAGS_UBSAN) $^ -o $@
 
 # =============================================================================
 # Test Executables
@@ -277,35 +277,35 @@ $(TEST_OBJECTS): $(OUT_D)/%.o: $(TEST_D)/%.c $(TEST_HEADERS) | $(OUT_D)
 
 # Debug object files
 $(OUT_D)/%-debug.o: $(SRC_D)/%.c $(HEADERS) | $(OUT_D)
-	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) $(CFLAGS_SHARED) -c $< -o $@
 
 $(OUT_D)/%-debug.o: $(TEST_D)/%.c $(TEST_HEADERS) | $(OUT_D)
 	$(CC) $(CFLAGS) $(DEBUG_FLAGS) -c $< -o $@
 
 # Coverage object files
 $(OUT_D)/%-coverage.o: $(SRC_D)/%.c $(HEADERS) | $(OUT_D)
-	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) $(CFLAGS_SHARED) -c $< -o $@
 
 $(OUT_D)/%-coverage.o: $(TEST_D)/%.c $(TEST_HEADERS) | $(OUT_D)
 	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) -c $< -o $@
 
 # AddressSanitizer object files
 $(OUT_D)/%-asan.o: $(SRC_D)/%.c $(HEADERS) | $(OUT_D)
-	$(CC) $(CFLAGS) $(ASAN_FLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(ASAN_FLAGS) $(CFLAGS_SHARED) -c $< -o $@
 
 $(OUT_D)/%-asan.o: $(TEST_D)/%.c $(TEST_HEADERS) | $(OUT_D)
 	$(CC) $(CFLAGS) $(ASAN_FLAGS) -c $< -o $@
 
 # UBSan object files
 $(OUT_D)/%-ubsan.o: $(SRC_D)/%.c $(HEADERS) | $(OUT_D)
-	$(CC) $(CFLAGS) $(UBSAN_FLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(UBSAN_FLAGS) $(CFLAGS_SHARED) -c $< -o $@
 
 $(OUT_D)/%-ubsan.o: $(TEST_D)/%.c $(TEST_HEADERS) | $(OUT_D)
 	$(CC) $(CFLAGS) $(UBSAN_FLAGS) -c $< -o $@
 
 # Release object files
 $(OUT_D)/%-release.o: $(SRC_D)/%.c $(HEADERS) | $(OUT_D)
-	$(CC) $(CFLAGS) $(RELEASE_FLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $(CFLAGS_SHARED) -c $< -o $@
 
 $(OUT_D)/%-release.o: $(TEST_D)/%.c $(TEST_HEADERS) | $(OUT_D)
 	$(CC) $(CFLAGS) $(RELEASE_FLAGS) -c $< -o $@
