@@ -1,20 +1,20 @@
 #include "bin.h"
 
 
+static const bin_int_t powers[BIN_BITS] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768};
+
 // Create a binary number from an integer.
 bin binNew(bin_int_t n) {
     bin b = binZERO;
-    
+
     // Build powers of 2 table first
-    bin_int_t powers[BIN_BITS];
     bin_int_t power = 1;
-    
+
     for (bin_int_t i = 0; i < BIN_BITS; i++) {
-        powers[i] = power;
         power = power + power;
         if (!power) break; // Overflow protection
     }
-    
+
     // Process bits from most significant to least significant
     for (int i = BIN_BITS - 1; i >= 0; i--) {
         if (n >= powers[i]) {
@@ -22,7 +22,7 @@ bin binNew(bin_int_t n) {
             n = n - powers[i];
         }
     }
-    
+
     return b;
 }
 
