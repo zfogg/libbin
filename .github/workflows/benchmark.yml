@@ -72,6 +72,11 @@ jobs:
           echo "✅ All tests passed successfully"
         else
           echo "❌ Some tests failed"
+          echo ""
+          echo "=== FAILED TEST OUTPUT ==="
+          cat benchmark_results.txt
+          echo ""
+          echo "=== END FAILED TEST OUTPUT ==="
           exit 1
         fi
 
