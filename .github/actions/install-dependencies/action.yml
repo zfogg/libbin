@@ -21,7 +21,7 @@ runs:
 
     - name: Install and cache Homebrew packages (macOS)
       if: inputs.os == 'macos'
-      uses: tecolicom/actions-use-homebrew-tools@v1  
+      uses: tecolicom/actions-use-homebrew-tools@v1
       with:
         tools: llvm cppcheck ${{ inputs.extra-packages }}
         cache: yes
@@ -33,23 +33,23 @@ runs:
         # Set up compiler environment
         export CC=clang
         export CXX=clang++
-        
+
         # Add LLVM tools to PATH
         export PATH="/usr/lib/llvm-*/bin:$PATH"
-        
+
         # Set environment variables for subsequent steps
         echo "CC=$CC" >> $GITHUB_ENV
         echo "CXX=$CXX" >> $GITHUB_ENV
         echo "PATH=$PATH" >> $GITHUB_ENV
-        
+
         # Verify clang installation
         echo "Clang version:"
         clang --version
-        
+
         # Verify static analysis tools
         echo "Static analysis tools:"
         cppcheck --version
-        which clang-tidy && clang-tidy --version || echo "clang-tidy not found"
+        clang-tidy --version
 
     - name: Set up build environment (macOS)
       if: inputs.os == 'macos'
@@ -58,15 +58,15 @@ runs:
         # Set up compiler environment - use system clang by default
         export CC=clang
         export CXX=clang++
-        
+
         # Add Homebrew LLVM to PATH if needed for tools like clang-tidy
         export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-        
+
         # Set up pkg-config for Homebrew
         export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/opt/homebrew/share/pkgconfig"
         export CPPFLAGS="-I/opt/homebrew/include"
         export LDFLAGS="-L/opt/homebrew/lib"
-        
+
         # Set environment variables for subsequent steps
         echo "CC=$CC" >> $GITHUB_ENV
         echo "CXX=$CXX" >> $GITHUB_ENV
@@ -74,12 +74,12 @@ runs:
         echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
         echo "CPPFLAGS=$CPPFLAGS" >> $GITHUB_ENV
         echo "LDFLAGS=$LDFLAGS" >> $GITHUB_ENV
-        
+
         # Verify clang installation
         echo "Clang version:"
         clang --version
-        
-        # Verify static analysis tools  
+
+        # Verify static analysis tools
         echo "Static analysis tools:"
         cppcheck --version
-        which clang-tidy && clang-tidy --version || echo "clang-tidy not found"
+        clang-tidy --version
