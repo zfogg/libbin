@@ -26,27 +26,14 @@ void initJunitXml(void) {
     current_test_start = 0;
 }
 
-// Start timing a test case
-void startTestTiming(void) {
-    if (!junit_enabled) return;
-    current_test_start = clock();
-}
-
-// Record a test result for JUnit XML output
+// Record a test result for JUnit XML output (legacy function for non-timed tests)
 void recordJunitTestResult(const char* testName, bin_int_t results) {
     if (!junit_enabled || test_count >= MAX_TESTS) return;
-    
-    // Calculate test duration
-    double duration = 0.0;
-    if (current_test_start != 0) {
-        clock_t end_time = clock();
-        duration = ((double)(end_time - current_test_start)) / CLOCKS_PER_SEC;
-    }
     
     strncpy(test_results[test_count].name, testName, sizeof(test_results[test_count].name) - 1);
     test_results[test_count].name[sizeof(test_results[test_count].name) - 1] = '\0';
     test_results[test_count].passed = results;
-    test_results[test_count].duration = duration;
+    test_results[test_count].duration = 0.0; // No timing for legacy calls
     test_count++;
 }
 
@@ -61,12 +48,17 @@ void finalizeJunitXml(void) {
     }
     
     time_t end_time = time(NULL);
-    double duration = difftime(end_time, start_time);
+    double total_suite_time = difftime(end_time, start_time);
     
     int failure_count = 0;
+    double total_test_time = 0.0;
     for (int i = 0; i < test_count; i++) {
         if (!test_results[i].passed) failure_count++;
+        total_test_time += test_results[i].duration;
     }
+    
+    // Use sum of individual test times if available, otherwise fall back to suite time
+    double duration = (total_test_time > 0.0) ? total_test_time : total_suite_time;
     
     fprintf(junit_file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     fprintf(junit_file, "<testsuites>\n");
@@ -152,6 +144,46 @@ void finalizeJunitXml(void) {
     fclose(junit_file);
 }
 
+// Global variable to track if we're currently timing a test
+static int currently_timing_test = 0;
+
+// Run a test function with proper timing
+void runTimedTest(const char* testName, void (*testFunction)(void)) {
+    currently_timing_test = 1;
+    
+    // Start timing
+    if (junit_enabled) {
+        current_test_start = clock();
+    }
+    
+    // Save the current test results state
+    bin_int_t old_results = bin_testResults;
+    
+    // Execute the actual test function
+    testFunction();
+    
+    // Calculate if this specific test passed (compare before/after state)
+    bin_int_t test_passed = (bin_testResults == old_results) ? old_results : bin_testResults;
+    
+    // Calculate test duration
+    double duration = 0.0;
+    if (junit_enabled && current_test_start != 0) {
+        clock_t end_time = clock();
+        duration = ((double)(end_time - current_test_start)) / CLOCKS_PER_SEC;
+    }
+    
+    // Record the result with timing
+    if (junit_enabled && test_count < MAX_TESTS) {
+        strncpy(test_results[test_count].name, testName, sizeof(test_results[test_count].name) - 1);
+        test_results[test_count].name[sizeof(test_results[test_count].name) - 1] = '\0';
+        test_results[test_count].passed = test_passed;
+        test_results[test_count].duration = duration;
+        test_count++;
+    }
+    
+    currently_timing_test = 0;
+}
+
 // Print the results of a test to the terminal in a nice format.
 void processTestResults(const char* testName, const bin_int_t results) {
     bin_testResults &= results;
@@ -161,6 +193,8 @@ void processTestResults(const char* testName, const bin_int_t results) {
     printf(format, testName, color, text, CC_RESET);
     fflush(stdout);
     
-    // Also record for JUnit XML (timing already started before test execution)
-    recordJunitTestResult(testName, results);
+    // Only record for JUnit XML if we're not already timing this test
+    if (!currently_timing_test) {
+        recordJunitTestResult(testName, results);
+    }
 }

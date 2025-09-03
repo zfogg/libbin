@@ -21,12 +21,19 @@ void processTestResults(const char* testName, bin_int_t results);
 void initJunitXml(void);
 
 /**
- * @brief Start timing a test case
+ * @brief Run a test function with timing and result recording
+ * @param testName The name of the test
+ * @param testFunction Pointer to the test function to execute
  */
-void startTestTiming(void);
+void runTimedTest(const char* testName, void (*testFunction)(void));
 
 /**
- * @brief Record a test result for JUnit XML output with timing
+ * @brief Macro to easily run a timed test
+ */
+#define RUN_TIMED_TEST(func) runTimedTest(#func, func)
+
+/**
+ * @brief Legacy function for recording test results without timing
  * @param testName The name of the test
  * @param results Whether the test passed (1) or failed (0)
  */
