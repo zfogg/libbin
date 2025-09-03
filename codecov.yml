@@ -1,0 +1,228 @@
+# Codecov configuration for libbin
+# This configuration uses Components to organize coverage reporting by functionality
+
+# Global settings
+codecov:
+  # Use the default branch from Git
+  branch: master
+  # Reject reports older than 12 hours
+  max_report_age: "12h"
+
+# Coverage configuration
+coverage:
+  # Overall precision and display settings
+  precision: 2
+  round: down
+  range: 70..100
+  
+  # Status checks configuration
+  status:
+    # Default rules applied to all status checks  
+    default_rules:
+      flag_coverage_not_uploaded_behavior: include
+
+    # Project-level status checks
+    project:
+      # Overall project coverage
+      default:
+        target: auto
+        threshold: 2%
+        branches:
+          - master
+          - main
+
+      # Core binary operations (most critical)
+      core_binary:
+        target: 80%  # Higher target for core functionality
+        threshold: 1%
+        paths:
+          - "src/bin.c"
+          - "src/bin.h"
+
+      # Bitwise operations component
+      bitwise_operations:
+        target: 75%
+        threshold: 2%
+        paths:
+          - "src/bitwise.c"
+          - "src/bitwise.h"
+          - "test/bitwise_tests.c"
+
+      # Mathematical operations component
+      math_operations:
+        target: 75%
+        threshold: 2%
+        paths:
+          - "src/math.c"
+          - "src/math.h"
+          - "test/math_tests.c"
+
+      # Boolean operations component
+      boolean_operations:
+        target: 75%
+        threshold: 2%
+        paths:
+          - "src/boolean.c"
+          - "src/boolean.h"
+          - "test/boolean_tests.c"
+
+      # Test infrastructure
+      test_framework:
+        target: 70%
+        threshold: 3%
+        paths:
+          - "test/bin_tests*.c"
+          - "test/bin_tests*.h"
+        informational: true  # Don't fail builds on test framework coverage
+
+    # Patch-level status checks (for PRs)
+    patch:
+      # Overall patch coverage
+      default:
+        target: 70%
+        threshold: 0%  # Strict - all new code should be tested
+        branches:
+          - master
+          - main
+
+      # Stricter patch requirements for core functionality
+      core_patch:
+        target: 90%
+        threshold: 0%
+        paths:
+          - "src/bin.c"
+          - "src/bin.h"
+
+# Component management for detailed reporting
+component_management:
+  # Default rules inherited by all components
+  default_rules:
+    statuses:
+      - type: project
+        target: auto
+        threshold: 2%
+        branches:
+          - "!master"  # Don't run on master to reduce noise
+
+  # Individual components for detailed tracking
+  individual_components:
+    # Core binary representation and manipulation
+    - component_id: core_binary
+      name: "Binary Core"
+      paths:
+        - "src/bin.*"
+        - "test/bin_tests.*"
+      statuses:
+        - type: project
+          target: 80%
+          threshold: 1%
+        - type: patch
+          target: 85%
+
+    # Bitwise operations (XOR, AND, OR, shifts, rotations)
+    - component_id: bitwise_ops
+      name: "Bitwise Operations" 
+      paths:
+        - "src/bitwise.*"
+        - "test/bitwise_tests.*"
+      statuses:
+        - type: project
+          target: 75%
+          threshold: 2%
+        - type: patch
+          target: 80%
+
+    # Mathematical operations (add, subtract, multiply, divide, etc.)
+    - component_id: math_ops
+      name: "Mathematical Operations"
+      paths:
+        - "src/math.*"
+        - "test/math_tests.*"
+      statuses:
+        - type: project
+          target: 75%
+          threshold: 2%
+        - type: patch
+          target: 80%
+
+    # Boolean/comparison operations (equals, greater than, etc.)
+    - component_id: boolean_ops
+      name: "Boolean Operations"
+      paths:
+        - "src/boolean.*"
+        - "test/boolean_tests.*"
+      statuses:
+        - type: project
+          target: 75%
+          threshold: 2%
+        - type: patch
+          target: 80%
+
+    # All header files (public API)
+    - component_id: public_api
+      name: "Public API Headers"
+      paths:
+        - "src/*.h"
+      statuses:
+        - type: project
+          target: 90%  # High target for public APIs
+          threshold: 1%
+        - type: patch
+          target: 95%
+
+    # All source implementation files
+    - component_id: implementation
+      name: "Implementation"
+      paths:
+        - "src/*.c"
+      statuses:
+        - type: project
+          target: 75%
+          threshold: 2%
+
+    # Test framework and utilities
+    - component_id: test_framework
+      name: "Test Framework"
+      paths:
+        - "test/bin_tests_debug.*"
+        - "test/bin_tests.h"
+      statuses:
+        - type: project
+          target: 70%
+          informational: true
+
+    # Edge case and integration tests
+    - component_id: edge_tests
+      name: "Edge Case Tests"
+      paths:
+        - "test/*_tests.c"
+      statuses:
+        - type: project
+          target: 60%
+          informational: true
+
+# Pull request comment configuration
+comment:
+  layout: "header, diff, flags, components, footer"
+  behavior: default
+  require_changes: false
+  require_base: false
+  require_head: true
+  branches:
+    - master
+    - main
+
+# Ignore certain paths from coverage calculation
+ignore:
+  - "build/**/*"
+  - "bin/**/*"
+  - "*.gcov"
+  - "**/*.gcov"
+  - ".github/**/*"
+  - "docs/**/*"
+  - "README.md"
+  - "Makefile"
+
+# Notification settings
+github_checks:
+  annotations: true
