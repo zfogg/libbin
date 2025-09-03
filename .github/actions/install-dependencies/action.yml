@@ -8,14 +8,6 @@ inputs:
     description: 'Additional packages to install (space-separated)'
     required: false
     default: ''
-  enable-coverage:
-    description: 'Install coverage tools (gcov/llvm-cov)'
-    required: false
-    default: 'false'
-  enable-sanitizers:
-    description: 'Install sanitizer tools'
-    required: false
-    default: 'false'
 
 runs:
   using: 'composite'
@@ -24,7 +16,7 @@ runs:
       if: inputs.os == 'ubuntu'
       uses: tecolicom/actions-use-apt-tools@v1
       with:
-        tools: clang cppcheck valgrind llvm clang-tidy libc6-dbg ${{ inputs.extra-packages }}
+        tools: clang cppcheck valgrind llvm clang-tidy ${{ inputs.extra-packages }}
         cache: yes
 
     - name: Install and cache Homebrew packages (macOS)
@@ -91,23 +83,3 @@ runs:
         echo "Static analysis tools:"
         cppcheck --version
         which clang-tidy && clang-tidy --version || echo "clang-tidy not found"
-
-    - name: Install coverage tools
-      if: inputs.enable-coverage == 'true'
-      shell: bash
-      run: |
-        if [[ "${{ inputs.os }}" == "ubuntu" ]]; then
-          sudo apt-get install -y lcov gcovr
-        elif [[ "${{ inputs.os }}" == "macos" ]]; then
-          brew install lcov gcovr
-        fi
-
-    - name: Install additional sanitizer tools  
-      if: inputs.enable-sanitizers == 'true'
-      shell: bash
-      run: |
-        if [[ "${{ inputs.os }}" == "ubuntu" ]]; then
-          sudo apt-get install -y libc6-dbg
-        elif [[ "${{ inputs.os }}" == "macos" ]]; then
-          echo "Sanitizer tools already available with Xcode"
-        fi
