@@ -4,7 +4,7 @@
 void binMSBi_test() {
     bin_int_t r = 1;
     for (bin_int_t i = 1; i < BIN_BITS-1; ++i) {
-        bin b = binNew(1 << i);
+        bin b = binNew((bin_int_t)(1U << i));
         r &= i == binToInt(binMSBi(b));
     }
     r &= BIN_BITS-1 == binToInt(binMSBi(binMAX));
@@ -34,10 +34,10 @@ void binLSBi_test() {
 void binMSB_test() {
     bin_int_t r = 1;
     for (bin_int_t i = 1; i < BIN_BITS-1; ++i) {
-        bin b = binNew((bin_int_t)1 << i);
-        r &= ((bin_int_t)1 << i) == binToInt(binMSB(b));
+        bin b = binNew((bin_int_t)(1U << i));
+        r &= ((bin_int_t)(1U << i)) == binToInt(binMSB(b));
     }
-    r &= ((bin_int_t)1 << (BIN_BITS-1)) == binToInt(binMSB(binMAX));
+    r &= ((bin_int_t)(1U << (BIN_BITS-1))) == binToInt(binMSB(binMAX));
     processTestResults("binMSB", r);
 }
 
@@ -173,7 +173,7 @@ void binRotateL_test() {
         bin_int_t expected = bi1;
         for (bin_int_t j = 0; j < bi2; j++) {
             bin_int_t msb = (expected >> (BIN_BITS - 1)) & 1;
-            expected = (expected << 1) | msb;
+            expected = (bin_int_t)((expected << 1) | msb);
         }
         
         r &= expected == binToInt(b);
@@ -194,7 +194,7 @@ void binRotateR_test() {
         bin_int_t expected = bi1;
         for (bin_int_t j = 0; j < bi2; j++) {
             bin_int_t lsb = expected & 1;
-            expected = (expected >> 1) | (lsb << (BIN_BITS - 1));
+            expected = (bin_int_t)((expected >> 1) | (lsb << (BIN_BITS - 1)));
         }
         
         r &= expected == binToInt(b);

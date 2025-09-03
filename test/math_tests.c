@@ -94,10 +94,10 @@ void binPow_test() {
     bin_int_t r = 1;
     for (bin_int_t i = 0; i < BIN_BITS*BIN_BITS; ++i) {
         bin b1        = binNew(i);
-        bin b2        = binNew(sqrt(sqrt(BIN_BITS*BIN_BITS - i + 1) + 1));
+        bin b2        = binNew((bin_int_t)sqrt(sqrt(BIN_BITS*BIN_BITS - i + 1) + 1));
         bin_int_t bi1 = binToInt(b1);
         bin_int_t bi2 = binToInt(b2);
-        unsigned int p = pow(bi1, bi2);
+        unsigned int p = (unsigned int)pow(bi1, bi2);
         if (p > BIN_INT_MAX) continue;
         r &= (bin_int_t)p == binToInt(binPow(b1, b2));
     }

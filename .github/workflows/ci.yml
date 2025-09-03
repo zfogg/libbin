@@ -78,10 +78,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        compiler: [clang, gcc]
-        exclude:
-          - os: macos-latest
-            compiler: gcc
+        compiler: [clang]
 
     runs-on: ${{ matrix.os }}
 

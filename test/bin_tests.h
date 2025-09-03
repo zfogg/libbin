@@ -80,3 +80,7 @@ void binGTEQ_test           ();
 
 void binLTEQ_test           ();
 
+// Edge case tests
+void binRandr_edge_cases_test();
+void binNew_binToInt_edge_cases_test();
+

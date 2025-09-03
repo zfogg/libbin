@@ -16,7 +16,7 @@ void binEQOne_test() {
     bin_int_t r = 1;
     for (bin_int_t i = 2; i < BIN_INT_MAX; ++i) {
         bin b = binNew(i);
-        r &= false == binEQZero(b);
+        r &= false == binEQOne(b);
     }
     r &= false == binEQOne(binZERO);
     r &= true  == binEQOne(binONE);

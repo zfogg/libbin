@@ -1,0 +1,56 @@
+CompileFlags:
+  Add:
+    - -std=c2x
+    - -Wextra
+    - -Wall
+    - -O2
+    - -g
+    - -fpic
+    - -I./src
+    - -I./test
+
+Index:
+  Background: Build
+
+Diagnostics:
+  ClangTidy:
+    Add:
+      - modernize-*
+      - performance-*
+      - portability-*
+      - readability-*
+      - bugprone-*
+    Remove:
+      - modernize-use-trailing-return-type
+      - modernize-avoid-c-arrays
+
+InlayHints:
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
+  Designators: Yes
+  BlockEnd: Yes
+  EnabledInlayHints:
+    ParameterNames: Yes
+    DeducedTypes: Yes
+    Designators: Yes
+    BlockEnd: Yes 
+
+Format:
+  BasedOnStyle: LLVM
+  IndentWidth: 2
+  TabWidth: 2
+  UseTab: Never
+  ColumnLimit: 100
+  AllowShortFunctionsOnASingleLine: Empty
+  AllowShortIfStatementsOnASingleLine: false
+  AllowShortLoopsOnASingleLine: false
+  AllowShortCaseLabelsOnASingleLine: false
+  PointerAlignment: Left
+  ReferenceAlignment: Left
+  SpaceBeforeParens: ControlStatements
+  SpaceInEmptyParentheses: false
+  SpacesInCStyleCastParentheses: false
+  SpacesInParentheses: false
+  SpacesInSquareBrackets: false
+  Standard: c2x 
