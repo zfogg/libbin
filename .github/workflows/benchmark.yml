@@ -29,8 +29,7 @@ jobs:
     - name: Build optimized version
       run: |
         # Build library and test binary with release optimization
-        make release
-        make tests
+        make tests-release
 
     - name: Run performance tests
       run: |
@@ -39,11 +38,11 @@ jobs:
 
         # Time the test execution
         echo "## Test Suite Performance"
-        /usr/bin/time -v ./bin/bin_tests 2>&1 | tee benchmark_results.txt
+        /usr/bin/time -v ./bin/bin_tests_release 2>&1 | tee benchmark_results.txt
 
         echo "## Memory Usage Analysis"
         echo "Binary sizes:"
-        ls -lh build/libbin.so bin/bin_tests
+        ls -lh build/libbin_release.so bin/bin_tests_release
 
         echo "## Library Metrics"
         echo "Source lines of code:"
