@@ -133,13 +133,23 @@ jobs:
         echo "Checking for bitwise operators (forbidden by educational constraints):"
 
         # Check for actual bitwise operators (the ones we want to avoid)
-        # Exclude && and || (logical ops) by using negative lookbehind/ahead
-        BITWISE_COUNT=$(grep -rn -E '(\&[^&]|\|[^|]|\^|<<|>>|~)' src/ | grep -v '//' | grep -v 'math.h.*\^' | grep -v '&&' | grep -v '||' | wc -l)
+        # Use sed to strip all comments before checking
+        BITWISE_VIOLATIONS=$(find src/ -name "*.c" -o -name "*.h" | xargs sed -e 's|//.*||g' -e 's|/\*.*\*/||g' | grep -n -E '(\&[^&]|\|[^|]|\^|<<|>>|~)' | grep -v '&&' | grep -v '||' || true)
+        
+        BITWISE_COUNT=$(echo "$BITWISE_VIOLATIONS" | grep -c . 2>/dev/null || true)
+        if [ -z "$BITWISE_COUNT" ] || [ "$BITWISE_COUNT" = "" ]; then
+          BITWISE_COUNT=0
+        fi
+        
         if [ "$BITWISE_COUNT" -eq 0 ]; then
           echo "✅ No bitwise operators found - constraint maintained!"
         else
-          echo "❌ Found $BITWISE_COUNT bitwise operations - review needed:"
-          grep -rn -E '(\&[^&]|\|[^|]|\^|<<|>>|~)' src/ | grep -v '//' | grep -v 'math.h.*\^' | grep -v '&&' | grep -v '||' | head -5
+          echo "❌ Found $BITWISE_COUNT bitwise operations - CONSTRAINT VIOLATION!"
+          echo "These violate the educational constraints:"
+          echo "$BITWISE_VIOLATIONS" | head -10
+          echo ""
+          echo "FAILING BUILD due to constraint violations"
+          exit 1
         fi
 
         echo ""

@@ -118,11 +118,19 @@ jobs:
 
         # Check for bitwise operators (should be forbidden by project rules)
         echo "### Bitwise operators:"
-        if grep -rn -E "(\&[^&]|\|[^|]|\^|<<|>>|~)" src/ | grep -v "//" | head -10; then
-          echo "❌ Found bitwise operators - may violate project constraints"
-          echo "Review: Are these compliant with the educational constraints?"
+        BITWISE_VIOLATIONS=$(find src/ -name "*.c" -o -name "*.h" | xargs sed -e 's|//.*||g' -e 's|/\*.*\*/||g' | grep -n -E '(\&[^&]|\|[^|]|\^|<<|>>|~)' | grep -v '&&' | grep -v '||' || true)
+        
+        BITWISE_COUNT=$(echo "$BITWISE_VIOLATIONS" | grep -c . 2>/dev/null || true)
+        if [ -z "$BITWISE_COUNT" ] || [ "$BITWISE_COUNT" = "" ]; then
+          BITWISE_COUNT=0
+        fi
+        
+        if [ "$BITWISE_COUNT" -eq 0 ]; then
+          echo "✅ No bitwise operators found - constraint maintained!"
         else
-          echo "✅ No bitwise operators found"
+          echo "❌ Found $BITWISE_COUNT bitwise operations - SECURITY RISK!"
+          echo "These may violate educational constraints and pose security risks:"
+          echo "$BITWISE_VIOLATIONS" | head -10
         fi
 
         # Check for arithmetic operators beyond basic ones

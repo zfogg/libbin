@@ -7,11 +7,11 @@
 bin binAdd(const bin x, const bin y) {
     bin r = binZERO;
     bin_int_t carry = 0;
-    
+
     for (bin_int_t i = 0; i < BIN_BITS; i++) {
         bin_int_t sum = x.bits[i] + y.bits[i] + carry;
-        r.bits[i] = sum & 1;  // Extract least significant bit
-        carry = sum >> 1;     // Extract carry bit
+        r.bits[i] = sum % 2;  // Extract least significant bit (check if odd)
+        carry = sum / 2;      // Extract carry bit (divide by 2)
     }
 
     // Check for overflow
@@ -112,18 +112,18 @@ bin binModulus(const bin x, const bin y) {
 
     if (binLT(x, y))
         return x;
-    
+
     // Use the same algorithm as division but return remainder instead
     bin remainder = binZERO;
-    
+
     for (int i = BIN_BITS-1; i >= 0; --i) {
         remainder = binShiftL1(remainder);
         remainder.bits[0] = x.bits[i];
-        
+
         if (binGTEQ(remainder, y))
             remainder = binSubtract(remainder, y);
     }
-    
+
     return remainder;
 }
 
@@ -134,7 +134,7 @@ bin binPow(const bin x, const bin y) {
         return binONE;
     else if (binEQOne(y))
         return x;
-    
+
     // Use binary exponentiation (square and multiply)
     bin result = binONE;
     bin base = x;
@@ -146,7 +146,7 @@ bin binPow(const bin x, const bin y) {
         base = binMultiply(base, base);
         exponent = binShiftR1(exponent);
     }
-    
+
     return result;
 }
 
@@ -156,39 +156,39 @@ bin binSqrt(const bin x) {
         return binZERO;
     else if (binEQOne(x))
         return binONE;
-    
+
     // Use Newton-Raphson method: x_{n+1} = (x_n + a/x_n) / 2
     // Start with x/2 as initial guess
     bin guess = binShiftR1(x);
     bin prev_guess;
     bin_int_t iterations = 0;
     const bin_int_t max_iterations = 30; // Prevent infinite loops
-    
+
     do {
         prev_guess = guess;
-        
+
         // Calculate a/guess
         bin quotient = binDivide(x, guess);
-        
+
         // Calculate (guess + a/guess) / 2
         bin sum = binAdd(guess, quotient);
         guess = binShiftR1(sum);
-        
+
         iterations++;
-        
+
         // Stop if we've converged or hit max iterations
     } while (!binEQ(guess, prev_guess) && iterations < max_iterations);
-    
+
     return guess;
 }
 
 // Calculate the base2 logarithm of a binary number
 bin binLog2(const bin x) {
     assert(!binEQZero(x)); // log2(0) is undefined
-    
+
     if (binEQOne(x))
         return binZERO; // log2(1) = 0
-    
+
     // Find the position of the most significant bit (MSB)
     // This gives us the integer part of log2(x)
     return binMSBi(x);
@@ -198,10 +198,10 @@ bin binLog2(const bin x) {
 // Calculate the base10 logarithm of a binary number
 bin binLog10(const bin x) {
     assert(!binEQZero(x)); // log10(0) is undefined
-    
+
     if (binEQOne(x))
         return binZERO; // log10(1) = 0
-    
+
     // Use a lookup table approach for common values
     // For values 1-1000, we can pre-calculate log10
     if (binLTEQ(x, binNew(1000))) {
@@ -209,13 +209,13 @@ bin binLog10(const bin x) {
         if (binEQ(x, binNew(10))) return binNew(1);
         if (binEQ(x, binNew(100))) return binNew(2);
         if (binEQ(x, binNew(1000))) return binNew(3);
-        
+
         // For other values, find the largest power of 10 that fits
         if (binGTEQ(x, binNew(100))) return binNew(2);
         if (binGTEQ(x, binNew(10))) return binNew(1);
         return binZERO; // x < 10
     }
-    
+
     // For larger values, use a different approach
     // Count the number of digits in base 10 representation
     bin temp = x;
@@ -224,7 +224,7 @@ bin binLog10(const bin x) {
         temp = binDivide(temp, binNew(10));
         digit_count++;
     }
-    
+
     // log10(x) is approximately (number of digits - 1)
     return binNew(digit_count - 1);
 }
@@ -234,17 +234,17 @@ bin binLog10(const bin x) {
 // This is a simplified integer-based approach that maintains the constraint-based design
 bin binLog(const bin x) {
     assert(!binEQZero(x)); // log(0) is undefined
-    
+
     if (binEQOne(x))
         return binZERO; // log(1) = 0
-    
+
     // For integer natural logarithm, we use a simple approximation:
     // ln(x) ≈ ln(2) * log2(x) where ln(2) ≈ 0.693
     // Since we're working with integers, we'll use a scaled approach
-    
+
     // Get the log2 value (MSB position)
     bin log2_val = binLog2(x);
-    
+
     // Simple lookup table approach for small values (more accurate)
     if (binLTEQ(x, binNew(16))) {
         // Pre-calculated ln(x) values scaled by 1 (rounded to nearest integer)
@@ -256,15 +256,15 @@ bin binLog(const bin x) {
         else if (x_int <= 12) return binNew(2);
         else return binNew(3);
     }
-    
+
     // For larger values, use the approximation ln(x) ≈ 0.7 * log2(x)
     // We'll use integer arithmetic: ln(x) ≈ (7 * log2(x)) / 10
     // But since we need integer results, we'll round: ln(x) ≈ (7 * log2(x) + 5) / 10
-    
+
     bin seven = binNew(7);
     bin ten = binNew(10);
     bin five = binNew(5);
-    
+
     // Calculate (7 * log2_val + 5) / 10
     bin scaled = binAdd(binMultiply(seven, log2_val), five);
     return binDivide(scaled, ten);
