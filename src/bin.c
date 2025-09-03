@@ -4,34 +4,25 @@
 // Create a binary number from an integer.
 bin binNew(bin_int_t n) {
     bin b = binZERO;
-
-    // Extract bits using only allowed operations: +, -, &&, ||, !
+    
+    // Build powers of 2 table first
+    bin_int_t powers[BIN_BITS];
+    bin_int_t power = 1;
+    
     for (bin_int_t i = 0; i < BIN_BITS; i++) {
-        // Check if n is odd by seeing if we can subtract pairs of 2
-        bin_int_t temp = n;
-        while (temp >= 2) {
-            temp = temp - 2;
-        }
-
-
-        // If temp == 1, n was odd (bit should be 1)
-        // If temp == 0, n was even (bit should be 0)
-        if (temp == 1) {
-            b.bits[i] = 1;
-        }
-
-        // Divide n by 2 using repeated subtraction
-        bin_int_t quotient = 0;
-        while (n >= 2) {
-            n = n - 2;
-            quotient = quotient + 1;
-        }
-        n = quotient;
-
-        // Stop if n becomes 0
-        if (n == 0) break;
+        powers[i] = power;
+        power = power + power;
+        if (!power) break; // Overflow protection
     }
-
+    
+    // Process bits from most significant to least significant
+    for (int i = BIN_BITS - 1; i >= 0; i--) {
+        if (n >= powers[i]) {
+            b.bits[i] = 1;
+            n = n - powers[i];
+        }
+    }
+    
     return b;
 }
 
