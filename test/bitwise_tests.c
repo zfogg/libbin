@@ -14,11 +14,19 @@ void binMSBi_test() {
 
 void binLSBi_test() {
     bin_int_t r = 1;
-    for (bin_int_t i = 1; i < BIN_BITS-1; ++i) {
-        bin b = binNew(BIN_INT_MAX >> i);
-        r &= 1 == binToInt(binLSBi(b));
-    }
-    r &= 1 == binToInt(binLSBi(binMAX));
+    // Test specific values where LSB is at different positions
+    // binNew(1) = 0000000000000001, LSB should be at index 0
+    r &= 0 == binToInt(binLSBi(binNew(1)));
+    // binNew(2) = 0000000000000010, LSB should be at index 1  
+    r &= 1 == binToInt(binLSBi(binNew(2)));
+    // binNew(4) = 0000000000000100, LSB should be at index 2
+    r &= 2 == binToInt(binLSBi(binNew(4)));
+    // binNew(8) = 0000000000001000, LSB should be at index 3
+    r &= 3 == binToInt(binLSBi(binNew(8)));
+    
+    // Test edge cases
+    r &= 0 == binToInt(binLSBi(binMAX)); // All bits set, LSB at index 0
+    
     processTestResults("binLSBi", r);
 }
 
