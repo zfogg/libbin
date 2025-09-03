@@ -249,19 +249,19 @@ $(TESTS): $(TEST_OBJECTS) $(TARGET) | $(BIN_D)
 	$(CC) $(CFLAGS) $(TEST_OBJECTS) -o $@ $(LDFLAGS_TEST) -l$(T)
 
 $(TESTS_DEBUG): $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-debug.o, $(TEST_SOURCES)) $(TARGET_DEBUG) | $(BIN_D)
-	$(CC) $(CFLAGS) $(DEBUG_FLAGS) $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-debug.o, $(TEST_SOURCES)) -o $@ $(LDFLAGS_TEST) -l$(T)_debug
+	$(CC) $(CFLAGS) $(DEBUG_FLAGS) $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-debug.o, $(TEST_SOURCES)) -o $@ $(LDFLAGS_TEST) $(TARGET_DEBUG)
 
 $(TESTS_COVERAGE): $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-coverage.o, $(TEST_SOURCES)) $(TARGET_COVERAGE) | $(BIN_D)
-	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-coverage.o, $(TEST_SOURCES)) -o $@ $(LDFLAGS_TEST) $(LDFLAGS_COVERAGE) -l$(T)_coverage
+	$(CC) $(CFLAGS) $(COVERAGE_FLAGS) $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-coverage.o, $(TEST_SOURCES)) -o $@ $(LDFLAGS_TEST) $(LDFLAGS_COVERAGE) $(TARGET_COVERAGE)
 
 $(TESTS_ASAN): $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-asan.o, $(TEST_SOURCES)) $(TARGET_ASAN) | $(BIN_D)
-	$(CC) $(CFLAGS) $(ASAN_FLAGS) $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-asan.o, $(TEST_SOURCES)) -o $@ $(LDFLAGS_TEST) $(LDFLAGS_ASAN) -l$(T)_asan
+	$(CC) $(CFLAGS) $(ASAN_FLAGS) $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-asan.o, $(TEST_SOURCES)) -o $@ $(LDFLAGS_TEST) $(LDFLAGS_ASAN) $(TARGET_ASAN)
 
 $(TESTS_UBSAN): $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-ubsan.o, $(TEST_SOURCES)) $(TARGET_UBSAN) | $(BIN_D)
-	$(CC) $(CFLAGS) $(UBSAN_FLAGS) $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-ubsan.o, $(TEST_SOURCES)) -o $@ $(LDFLAGS_TEST) $(LDFLAGS_UBSAN) -l$(T)_ubsan
+	$(CC) $(CFLAGS) $(UBSAN_FLAGS) $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-ubsan.o, $(TEST_SOURCES)) -o $@ $(LDFLAGS_TEST) $(LDFLAGS_UBSAN) $(TARGET_UBSAN)
 
 $(TESTS_RELEASE): $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-release.o, $(TEST_SOURCES)) $(TARGET_RELEASE) | $(BIN_D)
-	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-release.o, $(TEST_SOURCES)) -o $@ $(LDFLAGS_TEST) -l$(T)_release
+	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-release.o, $(TEST_SOURCES)) -o $@ $(LDFLAGS_TEST) $(TARGET_RELEASE)
 
 # =============================================================================
 # Object File Rules
