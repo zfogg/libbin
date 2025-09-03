@@ -48,6 +48,7 @@ jobs:
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         files: ./build/*.gcov
         fail_ci_if_error: true
         verbose: true
@@ -139,12 +140,12 @@ jobs:
           # This handles both // and /* */ comments properly
           perl -0pe 's|/\*.*?\*/||gs; s|//.*||gm' "$file" | grep -n -E '(\&[^&]|\|[^|]|\^|<<|>>|~)' | grep -v '&&' | grep -v '||' | sed "s|^|$file:|" || true
         done)
-        
+
         BITWISE_COUNT=$(echo "$BITWISE_VIOLATIONS" | grep -c . 2>/dev/null || true)
         if [ -z "$BITWISE_COUNT" ] || [ "$BITWISE_COUNT" = "" ]; then
           BITWISE_COUNT=0
         fi
-        
+
         if [ "$BITWISE_COUNT" -eq 0 ]; then
           echo "✅ No bitwise operators found - constraint maintained!"
         else
