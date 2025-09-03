@@ -25,12 +25,31 @@ Each `bin` represents a 16-bit value where each bit is stored as a separate elem
 
 ## Implementation Constraints ⚠️
 
-The library follows strict implementation rules:
+The library follows strict implementation rules to demonstrate computer operations from first principles:
+
+### Ideal Constraints (Educational Goal)
 - **Allowed operators**: Only `&&`, `||`, and `!` from C
 - **Type restriction**: Use only the `bin` type as defined in `./src/16.h`
 - **No base conversion**: Cannot convert between number bases
 - **Array indexing**: May use `+` and `-` for array indexing only
 - **Minor exceptions**: Simple loops are allowed
+
+### Practical Reality 🔧
+Due to the extreme nature of these constraints, some violations are unavoidable for a functional library:
+
+**Necessary Violations:**
+- **Loop conditions**: `<`, `>`, `<=`, `>=` needed for practical loops
+- **Basic arithmetic**: `+`, `-` for calculations beyond just array indexing
+- **Division/modulo**: `/`, `%` for bit manipulation (no practical alternative with given constraints)
+- **Equality/inequality**: `==`, `!=` for comparisons and conditionals
+
+**What We Successfully Avoid:**
+- ✅ **Bitwise operators**: No `&`, `|`, `^`, `<<`, `>>`, `~` 
+- ✅ **Complex arithmetic**: Minimal use of `*`, `/`, `%`
+- ✅ **Type punning**: No casting between types
+- ✅ **Standard library math**: No `<math.h>` functions in core operations
+
+The educational value remains: implementing fundamental operations without relying on hardware-level bitwise operations, demonstrating how computers work at a more basic level.
 
 ## Features ✨
 

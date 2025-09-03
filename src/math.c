@@ -22,7 +22,7 @@ bin binAdd(const bin x, const bin y) {
     //     puts("");
     //     // abort();
     // }
-    
+
     return r;
 }
 
@@ -231,74 +231,41 @@ bin binLog10(const bin x) {
 
 
 // Calculate the natural logarithm of a binary number
-bin binLog(const bin _x) {
-  assert(!binEQZero(_x)); // log(0) is undefined
-
-  if (binEQOne(_x))
-    return binZERO; // log(1) = 0
-
-  // INFO: from https://gist.github.com/LingDong-/7e4c4cae5cbbc44400a05fba65f06f23
-  // Convert to integer for easier calculation for this one, because I stole the code.
-  float x = binToInt(_x);
-
-  // ASSUMING:
-  // - non-denormalized numbers i.e. x > 2^−126
-  // - integer is 32 bit. float is IEEE 32 bit.
-
-  // INSPIRED BY:
-  // - https://stackoverflow.com/a/44232045
-  // - http://mathonweb.com/help_ebook/html/algorithms.htm#ln
-  // - https://en.wikipedia.org/wiki/Fast_inverse_square_root
-
-  // FORMULA:
-  // x = m * 2^p =>
-  //   ln(x) = ln(m) + ln(2)p,
-
-  // first normalize the value to between 1.0 and 2.0
-  // assuming normalized IEEE float
-  //    sign  exp       frac
-  // 0b 0    [00000000] 00000000000000000000000
-  // value = (-1)^s * M * 2 ^ (exp-127)
-  //
-  // exp = 127 for x = 1,
-  // so 2^(exp-127) is the multiplier
-
-  // evil floating point bit level hacking
-  unsigned int bx = *(unsigned int *)(&x);
-
-  // extract exp, since x>0, sign bit must be 0
-  unsigned int ex = bx >> 23;
-  signed int t = (signed int)ex - (signed int)127;
-
-  // reinterpret back to float
-  //   127 << 23 = 1065353216
-  //   0b11111111111111111111111 = 8388607
-  bx = 1065353216 | (bx & 8388607);
-  x = *(float *)(&bx);
-
-  // use remez algorithm to find approximation between [1,2]
-  // - see this answer https://stackoverflow.com/a/44232045
-  // - or this usage of C++/boost's remez implementation
-  //   https://computingandrecording.wordpress.com/2017/04/24/
-  // e.g.
-  // boost::math::tools::remez_minimax<double> approx(
-  //    [](const double& x) { return log(x); },
-  // 4, 0, 1, 2, false, 0, 0, 64);
-  //
-  // 4th order is:
-  // { -1.74178, 2.82117, -1.46994, 0.447178, -0.0565717 }
-  //
-  // 3rd order is:
-  // { -1.49278, 2.11263, -0.729104, 0.10969 }
-
-  return binNew(
-
-      /* less accurate */
-    //   -1.49278 + (2.11263 + (-0.729104 + 0.10969 * x) * x) * x
-
-      /* OR more accurate */
-      -1.7417939 + (2.8212026 + (-1.4699568 + (0.44717955 - 0.056570851 * x) * x) * x) * x
-
-      /* compensate for the ln(2)s. ln(2)=0.6931471806 */
-      + 0.6931471806 * t);
+// This is a simplified integer-based approach that maintains the constraint-based design
+bin binLog(const bin x) {
+    assert(!binEQZero(x)); // log(0) is undefined
+    
+    if (binEQOne(x))
+        return binZERO; // log(1) = 0
+    
+    // For integer natural logarithm, we use a simple approximation:
+    // ln(x) ≈ ln(2) * log2(x) where ln(2) ≈ 0.693
+    // Since we're working with integers, we'll use a scaled approach
+    
+    // Get the log2 value (MSB position)
+    bin log2_val = binLog2(x);
+    
+    // Simple lookup table approach for small values (more accurate)
+    if (binLTEQ(x, binNew(16))) {
+        // Pre-calculated ln(x) values scaled by 1 (rounded to nearest integer)
+        // ln(1)=0, ln(2)=1, ln(3)=1, ln(4)=1, ln(5)=2, ln(6)=2, ln(7)=2, ln(8)=2
+        // ln(9)=2, ln(10)=2, ln(11)=2, ln(12)=2, ln(13)=3, ln(14)=3, ln(15)=3, ln(16)=3
+        bin_int_t x_int = binToInt(x);
+        if (x_int <= 1) return binZERO;
+        else if (x_int <= 4) return binONE;
+        else if (x_int <= 12) return binNew(2);
+        else return binNew(3);
+    }
+    
+    // For larger values, use the approximation ln(x) ≈ 0.7 * log2(x)
+    // We'll use integer arithmetic: ln(x) ≈ (7 * log2(x)) / 10
+    // But since we need integer results, we'll round: ln(x) ≈ (7 * log2(x) + 5) / 10
+    
+    bin seven = binNew(7);
+    bin ten = binNew(10);
+    bin five = binNew(5);
+    
+    // Calculate (7 * log2_val + 5) / 10
+    bin scaled = binAdd(binMultiply(seven, log2_val), five);
+    return binDivide(scaled, ten);
 }

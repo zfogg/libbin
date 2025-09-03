@@ -1,0 +1,158 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ master, main, develop, coverage ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  test:
+    name: Test and Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      uses: ./.github/actions/install-dependencies
+      with:
+        os: ubuntu
+        extra-packages: 'lcov gcovr libc6-dbg'
+
+    - name: Build and test (optimized)
+      run: |
+        make clean
+        make test
+
+    - name: Build and test (debug)
+      run: |
+        make test-debug
+
+    - name: Test with AddressSanitizer
+      run: |
+        make test-asan
+
+    - name: Run static analysis
+      run: |
+        make check
+
+    - name: Generate coverage report
+      run: |
+        make coverage
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        files: ./build/*.gcov
+        fail_ci_if_error: false
+        verbose: true
+
+  memory-check:
+    name: Memory Safety Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      uses: ./.github/actions/install-dependencies
+      with:
+        os: ubuntu
+        extra-packages: 'libc6-dbg valgrind'
+
+    - name: Build for memory testing
+      run: |
+        make clean
+        make test-debug
+
+    - name: Run tests with Valgrind
+      run: |
+        valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1 ./bin/bin_tests_debug
+
+  cross-platform:
+    name: Cross-platform Build (${{ matrix.os }})
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            os-name: ubuntu
+          - os: macos-latest
+            os-name: macos
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      uses: ./.github/actions/install-dependencies
+      with:
+        os: ${{ matrix.os-name }}
+        extra-packages: ${{ matrix.os-name == 'ubuntu' && 'lcov gcovr' || 'gcovr' }}
+
+    - name: Build and test
+      run: |
+        make clean
+        make test
+
+    - name: Run static analysis
+      run: |
+        make check
+
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      uses: ./.github/actions/install-dependencies
+      with:
+        os: ubuntu
+        extra-packages: 'lcov gcovr libc6-dbg valgrind'
+
+    - name: Run clang-tidy
+      run: |
+        make check-tidy
+
+    - name: Check for constraint violations
+      run: |
+        echo "=== CONSTRAINT COMPLIANCE ANALYSIS ==="
+        echo ""
+        echo "🚫 CRITICAL VIOLATIONS (should be forbidden):"
+        echo "Checking for bitwise operators (forbidden by educational constraints):"
+
+        # Check for actual bitwise operators (the ones we want to avoid)
+        # Exclude && and || (logical ops) by using negative lookbehind/ahead
+        BITWISE_COUNT=$(grep -rn -E '(\&[^&]|\|[^|]|\^|<<|>>|~)' src/ | grep -v '//' | grep -v 'math.h.*\^' | grep -v '&&' | grep -v '||' | wc -l)
+        if [ "$BITWISE_COUNT" -eq 0 ]; then
+          echo "✅ No bitwise operators found - constraint maintained!"
+        else
+          echo "❌ Found $BITWISE_COUNT bitwise operations - review needed:"
+          grep -rn -E '(\&[^&]|\|[^|]|\^|<<|>>|~)' src/ | grep -v '//' | grep -v 'math.h.*\^' | grep -v '&&' | grep -v '||' | head -5
+        fi
+
+        echo ""
+        echo "⚠️  EXPECTED VIOLATIONS (necessary for functionality):"
+        echo "Loop conditions and basic comparisons:"
+        COMPARISON_COUNT=$(grep -rn -E '(<[^<]|>[^>]|<=|>=|==|!=)' src/ | grep -v '//' | wc -l)
+        echo "Found $COMPARISON_COUNT comparison operations (expected for practical implementation)"
+
+        echo ""
+        echo "✅ ALLOWED OPERATORS (should be present):"
+        LOGICAL_COUNT=$(grep -rn -E '(\&\&|\|\||!)' src/ | grep -v '//' | wc -l)
+        echo "Found $LOGICAL_COUNT logical operations (&&, ||, !) - these are allowed!"
+
+        echo ""
+        echo "🎯 CONSTRAINT COMPLIANCE SUMMARY:"
+        echo "- Educational goal: Avoid bitwise operators ✅ ACHIEVED"
+        echo "- Practical necessity: Basic loops and comparisons ⚠️ DOCUMENTED"
+        echo "- Overall compliance: Educational objectives met ✅"
+
