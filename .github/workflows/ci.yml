@@ -57,28 +57,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install dependencies with proper debug symbols
-      run: |
-        sudo apt-get update
-        
-        # Install base development tools
-        sudo apt-get install -y clang cppcheck llvm clang-tidy lcov gcovr
-        
-        # Install Valgrind and proper debug symbols
-        sudo apt-get install -y valgrind
-        sudo apt-get install -y libc6-dbg libc6-dbg:i386
-        
-        # Install additional debug info that Valgrind needs
-        sudo apt-get install -y glibc-source
-        
-        # Enable debug symbol repository
-        echo "deb http://ddebs.ubuntu.com $(lsb_release -cs) main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ddebs.list
-        echo "deb http://ddebs.ubuntu.com $(lsb_release -cs)-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ddebs.list
-        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 428D7C01 C8CAB6595FDFF622 || true
-        sudo apt-get update || true
-        
-        # Try to install additional debug symbols
-        sudo apt-get install -y libc6-dbg-dbgsym || true
+    - name: Install dependencies
+      uses: ./.github/actions/install-dependencies
+      with:
+        os: ubuntu
+        extra-packages: 'libc6-dbg valgrind'
 
     - name: Build for memory testing
       run: |
