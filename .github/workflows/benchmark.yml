@@ -20,7 +20,7 @@ jobs:
       uses: ./.github/actions/install-dependencies
       with:
         os: ubuntu
-        extra-packages: 'lcov gcovr libc6-dbg valgrind time'
+        extra-packages: 'time'
 
     - name: Build optimized version
       run: |

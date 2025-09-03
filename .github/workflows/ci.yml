@@ -19,7 +19,7 @@ jobs:
       uses: ./.github/actions/install-dependencies
       with:
         os: ubuntu
-        extra-packages: 'lcov gcovr libc6-dbg valgrind'
+        extra-packages: 'lcov gcovr libc6-dbg'
 
     - name: Build and test (optimized)
       run: |
@@ -110,7 +110,7 @@ jobs:
       uses: ./.github/actions/install-dependencies
       with:
         os: ${{ matrix.os-name }}
-        extra-packages: 'lcov gcovr libc6-dbg valgrind'
+        extra-packages: ${{ matrix.os-name == 'ubuntu' && 'lcov gcovr' || 'gcovr' }}
 
     - name: Build and test
       run: |
