@@ -1,3 +1,7 @@
+#if defined(__unix__) || defined(__linux__) || defined(unix) || defined(__APPLE__)
+#define _POSIX_C_SOURCE 200112L
+#endif
+
 #include "bin_tests.h"
 #include <stdio.h>
 #include <time.h>
