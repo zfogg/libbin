@@ -71,6 +71,7 @@ jobs:
       uses: codecov/test-results-action@v1
       with:
         files: ./junit.xml
+        flags: libbin-tests
         token: ${{ secrets.CODECOV_TOKEN }}
 
   memory-check:
@@ -128,11 +129,25 @@ jobs:
       run: |
         make check
 
+    - name: Debug - Check if junit.xml exists
+      run: |
+        if [ -f junit.xml ]; then
+          echo "✅ junit.xml exists"
+          ls -la junit.xml
+          echo "=== First 10 lines of junit.xml ==="
+          head -10 junit.xml
+        else
+          echo "❌ junit.xml not found"
+          echo "Files in current directory:"
+          ls -la
+        fi
+
     - name: Upload test results to Codecov
       if: ${{ !cancelled() }}
       uses: codecov/test-results-action@v1
       with:
         files: ./junit.xml
+        flags: libbin-tests
         token: ${{ secrets.CODECOV_TOKEN }}
 
   lint:

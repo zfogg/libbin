@@ -21,7 +21,12 @@ void processTestResults(const char* testName, bin_int_t results);
 void initJunitXml(void);
 
 /**
- * @brief Record a test result for JUnit XML output
+ * @brief Start timing a test case
+ */
+void startTestTiming(void);
+
+/**
+ * @brief Record a test result for JUnit XML output with timing
  * @param testName The name of the test
  * @param results Whether the test passed (1) or failed (0)
  */
