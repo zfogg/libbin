@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
-#ifdef __unix__
+#if defined(__unix__) || defined(__linux__) || defined(unix) || defined(__APPLE__)
 #include <unistd.h>
 #endif
 
@@ -65,7 +65,7 @@ void finalizeJunitXml(void) {
     
     // Get hostname
     char hostname[256] = "unknown";
-    #ifdef __unix__
+    #if defined(__unix__) || defined(__linux__) || defined(unix) || defined(__APPLE__)
     if (gethostname(hostname, sizeof(hostname)) != 0) {
         strcpy(hostname, "unix-host");
     }
