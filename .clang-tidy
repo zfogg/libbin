@@ -1,0 +1,13 @@
+---
+# Configuration for clang-tidy static analysis
+# Focus on serious bugs and performance issues, not style
+Checks: '
+  -*,
+  bugprone-*,
+  clang-analyzer-*,
+  performance-*,
+  portability-*,
+  -bugprone-easily-swappable-parameters
+'
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'

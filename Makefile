@@ -21,7 +21,7 @@ LDFLAGS_COVERAGE = $(LDFLAGS) --coverage
 LDFLAGS_ASAN     = $(LDFLAGS) -fsanitize=address
 
 # Static analysis tools
-CLANG_TIDY = /opt/homebrew/opt/llvm/bin/clang-tidy
+CLANG_TIDY = clang-tidy
 CPPCHECK = cppcheck
 
 # Library name
