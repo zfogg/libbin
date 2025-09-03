@@ -1,0 +1,113 @@
+name: 'Install Dependencies'
+description: 'Install and cache build dependencies for libbin'
+inputs:
+  os:
+    description: 'Operating system (ubuntu or macos)'
+    required: true
+  extra-packages:
+    description: 'Additional packages to install (space-separated)'
+    required: false
+    default: ''
+  enable-coverage:
+    description: 'Install coverage tools (gcov/llvm-cov)'
+    required: false
+    default: 'false'
+  enable-sanitizers:
+    description: 'Install sanitizer tools'
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install and cache APT packages (Ubuntu)
+      if: inputs.os == 'ubuntu'
+      uses: tecolicom/actions-use-apt-tools@v1
+      with:
+        tools: clang cppcheck valgrind llvm clang-tidy libc6-dbg ${{ inputs.extra-packages }}
+        cache: yes
+
+    - name: Install and cache Homebrew packages (macOS)
+      if: inputs.os == 'macos'
+      uses: tecolicom/actions-use-homebrew-tools@v1  
+      with:
+        tools: llvm cppcheck ${{ inputs.extra-packages }}
+        cache: yes
+
+    - name: Set up build environment (Ubuntu)
+      if: inputs.os == 'ubuntu'
+      shell: bash
+      run: |
+        # Set up compiler environment
+        export CC=clang
+        export CXX=clang++
+        
+        # Add LLVM tools to PATH
+        export PATH="/usr/lib/llvm-*/bin:$PATH"
+        
+        # Set environment variables for subsequent steps
+        echo "CC=$CC" >> $GITHUB_ENV
+        echo "CXX=$CXX" >> $GITHUB_ENV
+        echo "PATH=$PATH" >> $GITHUB_ENV
+        
+        # Verify clang installation
+        echo "Clang version:"
+        clang --version
+        
+        # Verify static analysis tools
+        echo "Static analysis tools:"
+        cppcheck --version
+        which clang-tidy && clang-tidy --version || echo "clang-tidy not found"
+
+    - name: Set up build environment (macOS)
+      if: inputs.os == 'macos'
+      shell: bash
+      run: |
+        # Set up compiler environment - use system clang by default
+        export CC=clang
+        export CXX=clang++
+        
+        # Add Homebrew LLVM to PATH if needed for tools like clang-tidy
+        export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+        
+        # Set up pkg-config for Homebrew
+        export PKG_CONFIG_PATH="/opt/homebrew/lib/pkgconfig:/opt/homebrew/share/pkgconfig"
+        export CPPFLAGS="-I/opt/homebrew/include"
+        export LDFLAGS="-L/opt/homebrew/lib"
+        
+        # Set environment variables for subsequent steps
+        echo "CC=$CC" >> $GITHUB_ENV
+        echo "CXX=$CXX" >> $GITHUB_ENV
+        echo "PATH=$PATH" >> $GITHUB_ENV
+        echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
+        echo "CPPFLAGS=$CPPFLAGS" >> $GITHUB_ENV
+        echo "LDFLAGS=$LDFLAGS" >> $GITHUB_ENV
+        
+        # Verify clang installation
+        echo "Clang version:"
+        clang --version
+        
+        # Verify static analysis tools  
+        echo "Static analysis tools:"
+        cppcheck --version
+        which clang-tidy && clang-tidy --version || echo "clang-tidy not found"
+
+    - name: Install coverage tools
+      if: inputs.enable-coverage == 'true'
+      shell: bash
+      run: |
+        if [[ "${{ inputs.os }}" == "ubuntu" ]]; then
+          sudo apt-get install -y lcov gcovr
+        elif [[ "${{ inputs.os }}" == "macos" ]]; then
+          brew install lcov gcovr
+        fi
+
+    - name: Install additional sanitizer tools  
+      if: inputs.enable-sanitizers == 'true'
+      shell: bash
+      run: |
+        if [[ "${{ inputs.os }}" == "ubuntu" ]]; then
+          sudo apt-get install -y libc6-dbg
+        elif [[ "${{ inputs.os }}" == "macos" ]]; then
+          echo "Sanitizer tools already available with Xcode"
+        fi

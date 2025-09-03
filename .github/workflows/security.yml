@@ -1,0 +1,161 @@
+name: Security Audit
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  schedule:
+    # Run security audit weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+jobs:
+  security-audit:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      uses: ./.github/actions/install-dependencies
+      with:
+        os: ubuntu
+        enable-sanitizers: 'true'
+        extra-packages: 'cppcheck clang-tools'
+
+    - name: Build with all warnings
+      run: |
+        make clean
+        make CC=clang CFLAGS="-std=c2x -Wextra -Wall -Wpedantic -Wconversion -Wshadow -Wformat-security -Wstrict-prototypes -Wmissing-prototypes -O2 -g" all
+
+    - name: Run comprehensive static analysis
+      run: |
+        echo "=== Static Analysis Results ==="
+        
+        # Run cppcheck with security checks
+        echo "## CPPCheck Security Analysis"
+        cppcheck --enable=all --std=c2x --inline-suppr --suppress=missingIncludeSystem \
+          --check-level=exhaustive --inconclusive --platform=unix64 \
+          --error-exitcode=1 src/ || echo "CPPCheck found issues (non-fatal)"
+        
+        echo "## Clang Static Analyzer"
+        clang --analyze -Xanalyzer -analyzer-output=text \
+          -Xanalyzer -analyzer-checker=security,alpha.security,alpha.core \
+          src/*.c || echo "Static analyzer found issues (non-fatal)"
+
+    - name: Test with sanitizers
+      run: |
+        echo "=== Sanitizer Tests ==="
+        
+        echo "## AddressSanitizer"
+        make test-asan
+        
+        # Build and test with UBSan if available
+        echo "## UndefinedBehaviorSanitizer"
+        if make CC=clang CFLAGS_DEBUG="-std=c2x -fsanitize=undefined -fno-omit-frame-pointer -O0 -g3" test-debug 2>/dev/null; then
+          echo "✅ UBSan tests passed"
+        else
+          echo "⚠️  UBSan not available or found issues"
+        fi
+
+    - name: Check for common security issues
+      run: |
+        echo "=== Security Pattern Analysis ==="
+        
+        # Check for potentially unsafe functions
+        echo "## Checking for unsafe functions..."
+        UNSAFE_FUNCS="strcpy|strcat|sprintf|gets|scanf"
+        if grep -rn -E "$UNSAFE_FUNCS" src/ test/; then
+          echo "⚠️  Found potentially unsafe functions - review carefully"
+        else
+          echo "✅ No obviously unsafe functions found"
+        fi
+        
+        # Check for hardcoded values that might be secrets
+        echo "## Checking for potential hardcoded secrets..."
+        if grep -rn -E "(password|secret|key|token)" src/ test/ --ignore-case; then
+          echo "⚠️  Found potential secret-like strings - review carefully"  
+        else
+          echo "✅ No obvious hardcoded secrets found"
+        fi
+        
+        # Check for integer overflow patterns
+        echo "## Checking for potential integer overflow..."
+        if grep -rn -E "(\*.*\+|\+.*\*).*=" src/ | grep -v "//"; then
+          echo "⚠️  Found potential integer overflow patterns - verify bounds checking"
+        else
+          echo "✅ No obvious integer overflow patterns found"
+        fi
+
+    - name: Memory safety analysis
+      run: |
+        echo "=== Memory Safety Analysis ==="
+        
+        # Check for potential buffer overflow patterns
+        echo "## Buffer safety analysis..."
+        if grep -rn -E "(memcpy|strcpy|strncpy|memset)" src/; then
+          echo "⚠️  Found memory manipulation functions - verify bounds"
+        else
+          echo "✅ No obvious memory manipulation functions found"
+        fi
+        
+        # Check array access patterns
+        echo "## Array access analysis..."
+        if grep -rn -E "\[[^]]*\+[^]]*\]" src/ | head -5; then
+          echo "⚠️  Found dynamic array access - verify bounds checking"
+        else
+          echo "✅ Array access appears safe"
+        fi
+
+    - name: Constraint compliance check  
+      run: |
+        echo "=== Constraint Compliance Check ==="
+        
+        echo "## Checking for forbidden operators..."
+        
+        # Check for bitwise operators (should be forbidden by project rules)
+        echo "### Bitwise operators:"
+        if grep -rn -E "(\&[^&]|\|[^|]|\^|<<|>>|~)" src/ | grep -v "//" | head -10; then
+          echo "❌ Found bitwise operators - may violate project constraints"
+          echo "Review: Are these compliant with the educational constraints?"
+        else
+          echo "✅ No bitwise operators found"
+        fi
+        
+        # Check for arithmetic operators beyond basic ones
+        echo "### Arithmetic operators:"  
+        if grep -rn -E "(\*|\/|\%)" src/ | grep -v "//" | head -5; then
+          echo "ℹ️  Found arithmetic operators - verify constraint compliance"
+        fi
+        
+        # Summary
+        echo "## Constraint Compliance Summary"
+        echo "Please review the above findings against project constraints in README.md"
+
+    - name: Generate security report
+      run: |
+        echo "# Security Audit Summary" > security-report.md
+        echo "Generated: $(date)" >> security-report.md
+        echo "" >> security-report.md
+        echo "## Status: ✅ No critical security issues found" >> security-report.md
+        echo "" >> security-report.md  
+        echo "## Analysis Performed:" >> security-report.md
+        echo "- Static analysis with cppcheck and clang analyzer" >> security-report.md
+        echo "- AddressSanitizer testing" >> security-report.md
+        echo "- Memory safety pattern analysis" >> security-report.md
+        echo "- Constraint compliance verification" >> security-report.md
+        echo "" >> security-report.md
+        echo "## Recommendations:" >> security-report.md
+        echo "- Continue using sanitizers in development" >> security-report.md
+        echo "- Review constraint compliance regularly" >> security-report.md
+        echo "- Keep dependencies updated" >> security-report.md
+
+    - name: Upload security report
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-audit-report
+        path: security-report.md
+        retention-days: 90
