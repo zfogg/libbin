@@ -1,4 +1,6 @@
 #include <time.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "bin_tests.h"
 
@@ -6,8 +8,25 @@
 bin_int_t bin_testResults = 1;
 
 int main(int argc, char* argv[]) {
-    (void)(argc); (void)(argv);
     srand((unsigned int)time(NULL));
+    
+    // Initialize JUnit XML output only if requested
+    int generate_junit = 0;
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--junit") == 0) {
+            generate_junit = 1;
+            break;
+        }
+    }
+    
+    // Also check environment variable
+    if (getenv("GENERATE_JUNIT")) {
+        generate_junit = 1;
+    }
+    
+    if (generate_junit) {
+        initJunitXml();
+    }
 
     // puts("");
     binMSBi_test            ();
@@ -56,6 +75,11 @@ int main(int argc, char* argv[]) {
 
     puts("");
     processTestResults("🥳 Pass ALL the tests 🎊", bin_testResults);
+    
+    // Finalize JUnit XML output if it was enabled
+    if (generate_junit) {
+        finalizeJunitXml();
+    }
 
     return !bin_testResults;
 }

@@ -14,3 +14,20 @@ extern bin_int_t bin_testResults;
  * @param results The results of the test
  */
 void processTestResults(const char* testName, bin_int_t results);
+
+/**
+ * @brief Initialize JUnit XML output
+ */
+void initJunitXml(void);
+
+/**
+ * @brief Record a test result for JUnit XML output
+ * @param testName The name of the test
+ * @param results Whether the test passed (1) or failed (0)
+ */
+void recordJunitTestResult(const char* testName, bin_int_t results);
+
+/**
+ * @brief Finalize and write JUnit XML output to file
+ */
+void finalizeJunitXml(void);

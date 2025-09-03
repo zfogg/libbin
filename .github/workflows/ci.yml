@@ -27,7 +27,7 @@ jobs:
 
     - name: Build and test (optimized)
       run: |
-        make test
+        GENERATE_JUNIT=1 make test
 
     - name: Test with AddressSanitizer
       run: |
@@ -52,6 +52,12 @@ jobs:
         files: ./build/*.gcov
         fail_ci_if_error: true
         verbose: true
+
+    - name: Upload test results to Codecov
+      if: ${{ !cancelled() }}
+      uses: codecov/test-results-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
 
   memory-check:
     name: Memory Safety Check
@@ -102,11 +108,17 @@ jobs:
     - name: Build and test
       run: |
         make ${{ matrix.build_mode }}
-        make test-${{ matrix.build_mode }}
+        GENERATE_JUNIT=1 make test-${{ matrix.build_mode }}
 
     - name: Run static analysis
       run: |
         make check
+
+    - name: Upload test results to Codecov
+      if: ${{ !cancelled() }}
+      uses: codecov/test-results-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
 
   lint:
     name: Code Quality
