@@ -29,18 +29,16 @@ jobs:
       run: |
         make test
 
-    - name: Build and test (debug)
-      run: |
-        make debug
-        make test-debug
-
     - name: Test with AddressSanitizer
       run: |
         make test-asan
 
+    - name: Test with UndefinedBehaviorSanitizer
+      run: |
+        make test-ubsan
+
     - name: Run static analysis
       run: |
-        make debug
         make check
 
     - name: Generate coverage report
@@ -51,7 +49,7 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         files: ./build/*.gcov
-        fail_ci_if_error: false
+        fail_ci_if_error: true
         verbose: true
 
   memory-check:
@@ -70,14 +68,14 @@ jobs:
 
     - name: Build for memory testing
       run: |
-        make debug
+        make tests-release
 
-    - name: Run tests with Valgrind
+    - name: Run tests with Valgrind (release)
       run: |
-        valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1 ./bin/bin_tests_debug
+        valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1 ./bin/bin_tests_release
 
   cross-platform:
-    name: Cross-platform Build (${{ matrix.os }}) [${{ matrix.build_mode }}]
+    name: Cross-platform Build (${{ matrix.os }}/${{ matrix.build_mode }})
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]

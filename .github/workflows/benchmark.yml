@@ -30,7 +30,7 @@ jobs:
       run: |
         # Build library and test binary with release optimization
         make release
-        make bin/bin_tests
+        make tests
 
     - name: Run performance tests
       run: |
