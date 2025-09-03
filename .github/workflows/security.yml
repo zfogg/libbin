@@ -121,7 +121,7 @@ jobs:
         BITWISE_VIOLATIONS=$(find src/ -name "*.c" -o -name "*.h" | while read file; do
           # Remove all types of C comments, then check for violations
           # This handles both // and /* */ comments properly
-          perl -pe 's|//.*||g; s|/\*.*?\*/||gs' "$file" | grep -n -E '(\&[^&]|\|[^|]|\^|<<|>>|~)' | grep -v '&&' | grep -v '||' | sed "s|^|$file:|" || true
+          perl -0pe 's|/\*.*?\*/||gs; s|//.*||gm' "$file" | grep -n -E '(\&[^&]|\|[^|]|\^|<<|>>|~)' | grep -v '&&' | grep -v '||' | sed "s|^|$file:|" || true
         done)
         
         BITWISE_COUNT=$(echo "$BITWISE_VIOLATIONS" | grep -c . 2>/dev/null || true)
