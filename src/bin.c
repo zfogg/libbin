@@ -1,25 +1,18 @@
 #include "bin.h"
 
-
-
-// TRULY ultra-pure binNew: Extract bits using only logical operations and comparisons
+// ULTIMATE ultra-pure binNew: NO arithmetic operators except subtraction and comparison!
 bin binNew(bin_int_t n) {
     bin result = binZERO;
     
-    // Process bits from most significant to least significant (correct order)
-    // This way we can subtract powers without affecting lower bits
+    // Process bits using pre-computed constants from 16.h - no addition needed!
     for (int bit_pos = BIN_BITS - 1; bit_pos >= 0; bit_pos--) {
-        // Build power of 2 for this bit position using only addition (doubling)
-        bin_int_t power_of_two = 1;
-        for (bin_int_t power_count = 0; power_count < bit_pos; power_count++) {
-            power_of_two = power_of_two + power_of_two;  // Double using addition
-        }
+        // Use pre-computed power of 2 from 16.h - NO ADDITION!
+        bin_int_t power_of_two = binPOWERS_OF_TWO[bit_pos];
         
-        // Test if n contains this power of 2 using only subtraction
-        // If n >= power_of_two, then this bit is set
+        // Test if n contains this power using only comparison and subtraction
         if (n >= power_of_two) {
             result.bits[bit_pos] = 1;  // PURE: direct bit setting
-            n = n - power_of_two;      // Remove this bit's contribution
+            n = n - power_of_two;      // PURE: only subtraction
         }
     }
     

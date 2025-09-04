@@ -73,3 +73,15 @@ static const bin binMAX = {
         1, 1, 1, 1,
     }
 };
+
+/**
+ * @brief Pre-computed powers of 2 for ultra-pure binNew implementation
+ * 
+ * This array contains the powers of 2 from 2^0 to 2^15, allowing
+ * binNew() to avoid all arithmetic operations except subtraction and comparison.
+ * This is the ultimate constraint-faithful approach for bit extraction.
+ */
+static const bin_int_t binPOWERS_OF_TWO[BIN_BITS] = {
+    1, 2, 4, 8, 16, 32, 64, 128,
+    256, 512, 1024, 2048, 4096, 8192, 16384, 32768
+};
