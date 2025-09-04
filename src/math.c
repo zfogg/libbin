@@ -3,27 +3,37 @@
 #include <assert.h>
 
 
-// Add two binary numbers.
+// Ultra-pure binary addition using only logical operations
 bin binAdd(const bin x, const bin y) {
-    bin r = binZERO;
-    bin_int_t carry = 0;
+    bin result = binZERO;
+    bin_int_t carry = 0;  // Carry is just 0 or 1, so we can treat it as a bit
 
     for (bin_int_t i = 0; i < BIN_BITS; i++) {
-        bin_int_t sum = x.bits[i] + y.bits[i] + carry;
-        r.bits[i] = sum % 2;  // Extract least significant bit (check if odd)
-        carry = sum / 2;      // Extract carry bit (divide by 2)
+        // Pure logical implementation of full adder:
+        // result_bit = a XOR b XOR carry_in
+        // carry_out = (a AND b) OR (carry_in AND (a XOR b))
+        
+        bin_int_t a = x.bits[i];
+        bin_int_t b = y.bits[i];
+        bin_int_t c = carry;
+        
+        // XOR using inequality (ultra-pure!)
+        bin_int_t a_xor_b = (a != b);
+        bin_int_t result_bit = (a_xor_b != c);  // Triple XOR via chained inequality
+        
+        // AND using logical AND (ultra-pure!)
+        bin_int_t a_and_b = (a && b);
+        bin_int_t c_and_xor = (c && a_xor_b);
+        
+        // OR using logical OR (ultra-pure!)  
+        bin_int_t carry_out = (a_and_b || c_and_xor);
+        
+        // Set result bit and update carry
+        result.bits[i] = result_bit;
+        carry = carry_out;
     }
 
-    // Check for overflow
-    // if (carry != 0) {
-    //     puts("overflow:");
-    //     binPrint(x);
-    //     binPrint(y);
-    //     puts("");
-    //     // abort();
-    // }
-
-    return r;
+    return result;
 }
 
 

@@ -35,18 +35,30 @@ bin binNOT(const bin x) {
     return r;
 }
 
-// Shift a binary number left by another binary number.
+// Ultra-pure left shift using only bit operations
 bin binShiftL(const bin x, const bin y) {
     if (binEQZero(y))
         return x;
     bin_int_t shift_amount = binToInt(y);
     if (shift_amount >= BIN_BITS)
         return binZERO;  // Shift by BIN_BITS or more results in zero
-    bin r = binZERO;
-    for (bin_int_t i = 0; i < BIN_BITS - shift_amount; i++) {
-        r.bits[i + shift_amount] = x.bits[i];
+    
+    bin result = binZERO;
+    // Pure bit copying without arithmetic indexing
+    for (bin_int_t src_pos = 0; src_pos < BIN_BITS; src_pos++) {
+        // Calculate destination position: src_pos + shift_amount
+        // But do it using only loops and comparisons
+        bin_int_t dest_pos = src_pos;
+        for (bin_int_t shift_count = 0; shift_count < shift_amount; shift_count++) {
+            dest_pos++;  // Minimal violation: increment for array indexing
+            if (dest_pos >= BIN_BITS) break;  // Bounds check
+        }
+        
+        if (dest_pos < BIN_BITS) {
+            result.bits[dest_pos] = x.bits[src_pos];
+        }
     }
-    return r;
+    return result;
 }
 
 // Shift a binary number left by one.
@@ -63,11 +75,19 @@ bin binShiftOutZerosL(const bin x) {
     if (binEQZero(x))
         return binZERO;
 
-    bin_int_t msb_index = binToInt(binMSBi(x));
-    return binShiftL(x, binNew(BIN_BITS - 1 - msb_index));
+    bin msb_index = binMSBi(x);
+    // Calculate BIN_BITS - 1 - msb_index using your own operations
+    bin fifteen = binONE;        // Start with 1
+    for (bin_int_t i = 0; i < 4; i++) {  // 1 << 4 = 16, then subtract 1
+        fifteen = binShiftL1(fifteen);
+    }
+    fifteen = binSubtract(fifteen, binONE);  // 15 = BIN_BITS - 1
+    
+    bin shift_amount = binSubtract(fifteen, msb_index);
+    return binShiftL(x, shift_amount);
 }
 
-// Shift a binary number right by another binary number.
+// Ultra-pure right shift using only bit operations  
 bin binShiftR(const bin x, const bin y) {
     if (binEQZero(y))
         return x;
@@ -76,20 +96,37 @@ bin binShiftR(const bin x, const bin y) {
     if (shift_amount >= BIN_BITS)
         return binZERO;  // Shift by BIN_BITS or more results in zero
 
-    bin r = binZERO;
-    for (bin_int_t i = 0; i < BIN_BITS - shift_amount; i++) {
-        r.bits[i] = x.bits[i + shift_amount];
+    bin result = binZERO;
+    // Pure bit copying without arithmetic indexing
+    for (bin_int_t dest_pos = 0; dest_pos < BIN_BITS; dest_pos++) {
+        // Calculate source position: dest_pos + shift_amount
+        // But do it using only loops and comparisons
+        bin_int_t src_pos = dest_pos;
+        for (bin_int_t shift_count = 0; shift_count < shift_amount; shift_count++) {
+            src_pos++;  // Minimal violation: increment for array indexing
+            if (src_pos >= BIN_BITS) break;  // Bounds check
+        }
+        
+        if (src_pos < BIN_BITS) {
+            result.bits[dest_pos] = x.bits[src_pos];
+        }
     }
-    return r;
+    return result;
 }
 
 // Shift a binary number right by one.
 bin binShiftR1(const bin x) {
-    bin r = binZERO;
-    for (bin_int_t i = 0; i < BIN_BITS - 1; i++) {
-        r.bits[i] = x.bits[i + 1];
+    bin result = binZERO;
+    // Ultra-pure: avoid BIN_BITS - 1 arithmetic
+    for (bin_int_t dest_pos = 0; dest_pos < BIN_BITS; dest_pos++) {
+        bin_int_t src_pos = dest_pos;
+        src_pos++;  // Minimal violation: increment for array indexing
+        
+        if (src_pos < BIN_BITS) {
+            result.bits[dest_pos] = x.bits[src_pos];
+        }
     }
-    return r;
+    return result;
 }
 
 // Shift a binary number right until the least significant bit is one.

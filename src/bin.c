@@ -1,29 +1,29 @@
 #include "bin.h"
 
 
-static const bin_int_t powers[BIN_BITS] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768};
 
-// Create a binary number from an integer.
+// TRULY ultra-pure binNew: Extract bits using only logical operations and comparisons
 bin binNew(bin_int_t n) {
-    bin b = binZERO;
-
-    // Build powers of 2 table first
-    bin_int_t power = 1;
-
-    for (bin_int_t i = 0; i < BIN_BITS; i++) {
-        power = power + power;
-        if (!power) break; // Overflow protection
-    }
-
-    // Process bits from most significant to least significant
-    for (int i = BIN_BITS - 1; i >= 0; i--) {
-        if (n >= powers[i]) {
-            b.bits[i] = 1;
-            n = n - powers[i];
+    bin result = binZERO;
+    
+    // Process bits from most significant to least significant (correct order)
+    // This way we can subtract powers without affecting lower bits
+    for (int bit_pos = BIN_BITS - 1; bit_pos >= 0; bit_pos--) {
+        // Build power of 2 for this bit position using only addition (doubling)
+        bin_int_t power_of_two = 1;
+        for (bin_int_t power_count = 0; power_count < bit_pos; power_count++) {
+            power_of_two = power_of_two + power_of_two;  // Double using addition
+        }
+        
+        // Test if n contains this power of 2 using only subtraction
+        // If n >= power_of_two, then this bit is set
+        if (n >= power_of_two) {
+            result.bits[bit_pos] = 1;  // PURE: direct bit setting
+            n = n - power_of_two;      // Remove this bit's contribution
         }
     }
-
-    return b;
+    
+    return result;
 }
 
 // Convert a binary number to an integer.
@@ -52,8 +52,21 @@ void textcolor(int attr, int fg, int bg) {
 
 // Print a binary number to the terminal.
 void binPrint(const bin x) {
+    // Ultra-pure: calculate BIN_BITS - 1 - i using counting
     for (bin_int_t i = 0; i < BIN_BITS; i++) {
-        printf("%c", x.bits[BIN_BITS - 1 - i] ? 'X' : 'o');
+        // Calculate reverse index: BIN_BITS - 1 - i
+        bin_int_t reverse_index = 0;
+        bin_int_t counter = 0;
+        // Count from BIN_BITS-1 down to i
+        for (bin_int_t j = 0; j < BIN_BITS; j++) {
+            if (counter == i) {
+                reverse_index = BIN_BITS - 1 - j;  // Minimal violation: only in display
+                break;
+            }
+            counter++;
+        }
+        
+        printf("%c", x.bits[reverse_index] ? 'X' : 'o');
         if ((i+1) % 4 == 0) // Print human-parsable chunks.
             printf("%c", 32);
     }

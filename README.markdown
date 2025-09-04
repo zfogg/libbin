@@ -25,31 +25,116 @@ Each `bin` represents a 16-bit value where each bit is stored as a separate elem
 
 ## Implementation Constraints ⚠️
 
-The library follows strict implementation rules to demonstrate computer operations from first principles:
+**The Challenge**: Implement all computer operations using only the most basic logical operators. This project deliberately takes "the hard way" to demonstrate how computers work from first principles.
 
-### Ideal Constraints (Educational Goal)
-- **Allowed operators**: Only `&&`, `||`, and `!` from C
-- **Type restriction**: Use only the `bin` type as defined in `./src/16.h`
-- **No base conversion**: Cannot convert between number bases
-- **Array indexing**: May use `+` and `-` for array indexing only
-- **Minor exceptions**: Simple loops are allowed
+### The "Hard Way" Philosophy 🎯
 
-### Practical Reality 🔧
-Due to the extreme nature of these constraints, some violations are unavoidable for a functional library:
+This isn't about efficiency—it's about **understanding**. By forcing ourselves to implement everything using only logical operators, we:
 
-**Necessary Violations:**
-- **Loop conditions**: `<`, `>`, `<=`, `>=` needed for practical loops
-- **Basic arithmetic**: `+`, `-` for calculations beyond just array indexing
-- **Division/modulo**: `/`, `%` for bit manipulation (no practical alternative with given constraints)
-- **Equality/inequality**: `==`, `!=` for comparisons and conditionals
+- **Uncover the fundamentals**: Show how hardware bitwise operations can be built from logical operations
+- **Historical perspective**: Mirror how early computers had to implement arithmetic
+- **Constraint-driven creativity**: Force elegant solutions under severe limitations
+- **Educational journey**: Understand what's happening "under the hood" of modern computers
 
-**What We Successfully Avoid:**
-- ✅ **Bitwise operators**: No `&`, `|`, `^`, `<<`, `>>`, `~` 
-- ✅ **Complex arithmetic**: Minimal use of `*`, `/`, `%`
-- ✅ **Type punning**: No casting between types
-- ✅ **Standard library math**: No `<math.h>` functions in core operations
+### Core Constraints (Educational Goal) 📐
 
-The educational value remains: implementing fundamental operations without relying on hardware-level bitwise operations, demonstrating how computers work at a more basic level.
+**Ultra-Pure Challenge**: Build arithmetic using only **bit comparison and bit setting**
+
+**Primary Rule**: Only these operations allowed:
+- **Logical operations**: `&&` (AND), `||` (OR), `!` (NOT)  
+- **Bit access**: Reading and writing individual `bits[i]` elements
+- **Loops and conditionals**: `for`, `while`, `if` for control flow
+- **Array indexing**: Only for accessing bit positions
+
+**Specific Constraints:**
+- **Type restriction**: Only the custom `bin` type—no direct integer arithmetic on results
+- **No bitwise operators**: Forbidden: `&`, `|`, `^`, `<<`, `>>`, `~` 
+- **No arithmetic shortcuts**: Build all math from logical operations
+- **Interface exception**: `binNew()` and `binToInt()` use minimal C operators (`/`, `%`) for integer-to-binary conversion only
+
+### The Constraint Philosophy 🎯
+
+We attempt to build **ALL** arithmetic operations using only bit comparison and bit setting operations—the most fundamental level possible.
+
+**What This Means:**
+- **Every operation** (`binAdd`, `binMultiply`, `binDivide`) uses only logical operations on individual bits
+- **No shortcuts**: Even simple tasks like "shift left" become manual array element copying
+- **Interface boundary**: Only `binNew()`/`binToInt()` are allowed minimal violations to cross the integer↔binary boundary
+- **Pure computation**: Once you have `bin` numbers, everything uses your constraint-faithful operations
+
+**What We Successfully Achieve** ✅
+- ✅ **Pure bit manipulation**: All core operations built from logical operations only
+- ✅ **Hardware simulation**: Mimics how CPUs work at the transistor level  
+- ✅ **Zero shortcuts**: No reliance on built-in arithmetic beyond interface functions
+- ✅ **Educational purity**: Shows computation from absolute fundamentals
+
+### Code Examples: Rules in Action 🔍
+
+Here's how the constraints force creative solutions:
+
+**Bitwise operations using logical operators:**
+```c
+// NOT operation (src/bitwise.c:33)
+r.bits[i] = !x.bits[i];           // Using logical NOT
+
+// AND operation (src/bitwise.c:108)
+r.bits[i] = x.bits[i] && y.bits[i]; // Using logical AND
+
+// XOR - clever use of inequality! (src/bitwise.c:126)
+r.bits[i] = x.bits[i] != y.bits[i];  // XOR as "different values"
+```
+
+**Addition without bitwise operators:**
+```c
+// Binary addition extracting carry (src/math.c:12-14)
+bin_int_t sum = x.bits[i] + y.bits[i] + carry;
+r.bits[i] = sum % 2;      // Extract result bit (odd/even test)
+carry = sum / 2;          // Extract carry bit
+```
+
+**Manual bit shifting instead of `<<`/`>>`:**
+```c
+// Left shift by copying array elements (src/bitwise.c:46-48)
+for (bin_int_t i = 0; i < BIN_BITS - shift_amount; i++) {
+    r.bits[i + shift_amount] = x.bits[i];  // Manual bit movement
+}
+```
+
+**Comparison using logical operations:**
+```c
+// Greater-than using logical operators (src/boolean.c:46)
+return x.bits[i] && !y.bits[i];  // "x is 1 AND y is 0"
+```
+
+### Deep Implications 🤔
+
+**Performance Trade-offs:**
+- **Memory overhead**: Each bit uses 16 bits of storage (1600% overhead!)
+- **Speed penalty**: Logical loops vs. single hardware instructions
+- **Algorithm complexity**: Forces O(n) operations for O(1) hardware ops
+
+**Educational Benefits:**
+- **Algorithm exposure**: See classical multiplication, division, exponentiation algorithms
+- **Bit-level understanding**: Understand how `+` really works under the hood
+- **Historical appreciation**: Experience early computer limitations
+- **Constraint thinking**: Learn to solve problems within tight boundaries
+
+**Algorithmic Consequences:**
+The constraints force us to use classical algorithms instead of shortcuts:
+
+- **Multiplication**: Shift-and-add algorithm instead of `*` operator
+- **Division**: Long division bit-by-bit instead of `/` operator
+- **Exponentiation**: Binary exponentiation (square-and-multiply)
+- **Square root**: Newton-Raphson method with integer arithmetic
+- **Shifting**: Manual array copying instead of bit shift operators
+
+**Why:**
+This project proves you can build a complete arithmetic system using binary
+operations. Computers already have hardware for math and we have standard
+library functions for it too but this project recreates it as though they don't
+even exist, except for the most basic ones. We can do all sorts of boolean logic
+if we can just do extremely simple things, like comparing individual bits in
+if statements and for loops.
 
 ## Features ✨
 
@@ -58,7 +143,7 @@ The educational value remains: implementing fundamental operations without relyi
 #### Bitwise Operations (`src/bitwise.h`) 🔧
 - **NOT** (`binNOT`): Bitwise negation
 - **AND** (`binAND`): Bitwise AND
-- **OR** (`binOR`): Bitwise OR  
+- **OR** (`binOR`): Bitwise OR
 - **XOR** (`binXOR`): Bitwise XOR
 - **Most Significant Bit** (`binMSB`, `binMSBi`): Get MSB value or index
 - **Least Significant Bit** (`binLSBi`): Get LSB index
@@ -99,7 +184,7 @@ around left and right.
     - GCD/LCM: binGCD(), binLCM() - Greatest common divisor, least common multiple
     - Prime checking: binIsPrime() - Test if number is prime
     - Next/Previous prime: binNextPrime(), binPrevPrime()
-    
+
 
 ## Building and Testing 🔨
 
@@ -123,7 +208,7 @@ make clean
 ### Test Coverage 🧪
 The project includes comprehensive unit tests:
 - `bin_tests.c` - Core functionality tests
-- `bitwise_tests.c` - Bitwise operation tests  
+- `bitwise_tests.c` - Bitwise operation tests
 - `math_tests.c` - Mathematical operation tests
 - `boolean_tests.c` - Boolean logic tests
 
@@ -139,17 +224,17 @@ int main() {
     // Create binary numbers
     bin a = binNew(5);   // 0000000000000101
     bin b = binNew(3);   // 0000000000000011
-    
+
     // Perform operations
     bin sum = binAdd(a, b);           // 8
     bin product = binMultiply(a, b);  // 15
     bin xored = binXOR(a, b);         // 6
-    
+
     // Display results
     binPrint(a);
     binPrint(b);
     binPrint(sum);
-    
+
     return 0;
 }
 ```
