@@ -85,3 +85,21 @@ static const bin_int_t binPOWERS_OF_TWO[BIN_BITS] = {
     1, 2, 4, 8, 16, 32, 64, 128,
     256, 512, 1024, 2048, 4096, 8192, 16384, 32768
 };
+
+/**
+ * @brief Additional pre-computed bin constants for ultra-pure loop control
+ * 
+ * These constants allow loops to use bin arithmetic instead of integer arithmetic,
+ * eliminating ++ and -- operators from all loop control structures.
+ */
+static const bin binSIXTEEN = {
+    .bits = {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0}  // 16 in binary
+};
+
+static const bin binFIFTEEN = {
+    .bits = {1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0}  // 15 in binary
+};
+
+static const bin binFOUR = {
+    .bits = {0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0}  // 4 in binary
+};

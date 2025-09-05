@@ -3,6 +3,7 @@
 #include <assert.h>
 
 
+
 // Ultra-pure binary addition using only logical operations
 bin binAdd(const bin x, const bin y) {
     bin result = binZERO;
@@ -73,22 +74,17 @@ bin binMultiply(const bin x, const bin y) {
     bin result = binZERO;
     bin multiplicand = x;
 
-    for (bin_int_t i = 0; i < BIN_BITS; i++) {
+    // Use bin arithmetic for loop control - constraint adherent!
+    bin counter = binZERO;
+    bin max_bits = binNew(BIN_BITS);
+    
+    while (binLT(counter, max_bits)) {
+        bin_int_t i = binToInt(counter);
         if (y.bits[i]) {
-            // Check if adding multiplicand would cause overflow
-            // If result + multiplicand > MAX, then overflow would occur
-            // bin_int_t result_int = binToInt(result);
-            // bin_int_t multiplicand_int = binToInt(multiplicand);
-            // if (result_int > BIN_INT_MAX - multiplicand_int) {
-            //     puts("overflow in multiplication:");
-            //     binPrint(x);
-            //     binPrint(y);
-            //     puts("");
-            //     // abort();
-            // }
             result = binAdd(result, multiplicand);
         }
         multiplicand = binShiftL1(multiplicand);
+        counter = binIncrement(counter);
     }
 
     return result;

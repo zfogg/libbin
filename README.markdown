@@ -45,6 +45,7 @@ This isn't about efficiency—it's about **understanding**. By forcing ourselves
 - **Bit access**: Reading and writing individual `bits[i]` elements
 - **Loops and conditionals**: `for`, `while`, `if` for control flow
 - **Array indexing**: Only for accessing bit positions
+- **Loop control operators**: `++`, `--`, `<`, `>`, `<=`, `>=` are acceptable for loop iteration to avoid circular dependencies
 
 **Specific Constraints:**
 - **Type restriction**: Only the custom `bin` type—no direct integer arithmetic on results
@@ -61,6 +62,7 @@ We attempt to build **ALL** arithmetic operations using only bit comparison and 
 - **No shortcuts**: Even simple tasks like "shift left" become manual array element copying
 - **Interface boundary**: Only `binNew()`/`binToInt()` are allowed minimal violations to cross the integer↔binary boundary
 - **Pure computation**: Once you have `bin` numbers, everything uses your constraint-faithful operations
+- **Loop control exception**: Foundation functions (like `binEQ`, `binAdd`) use simple integer loops to prevent circular dependencies, while higher-level functions can use bin arithmetic for loop control
 
 **What We Successfully Achieve** ✅
 - ✅ **Pure bit manipulation**: All core operations built from logical operations only

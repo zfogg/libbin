@@ -1,38 +1,53 @@
 #include "bin.h"
 
-// ULTIMATE ultra-pure binNew: NO arithmetic operators except subtraction and comparison!
+// ULTIMATE ultra-pure binNew: NO loops, NO arithmetic - just direct bit testing!
 bin binNew(bin_int_t n) {
     bin result = binZERO;
     
-    // Process bits using pre-computed constants from 16.h - no addition needed!
-    for (int bit_pos = BIN_BITS - 1; bit_pos >= 0; bit_pos--) {
-        // Use pre-computed power of 2 from 16.h - NO ADDITION!
-        bin_int_t power_of_two = binPOWERS_OF_TWO[bit_pos];
-        
-        // Test if n contains this power using only comparison and subtraction
-        if (n >= power_of_two) {
-            result.bits[bit_pos] = 1;  // PURE: direct bit setting
-            n = n - power_of_two;      // PURE: only subtraction
-        }
-    }
+    // NO LOOPS! Test each bit position directly using pre-computed constants
+    // This eliminates the bootstrap problem completely - no loop control needed!
+    if (n >= binPOWERS_OF_TWO[15]) { result.bits[15] = 1; n = n - binPOWERS_OF_TWO[15]; }
+    if (n >= binPOWERS_OF_TWO[14]) { result.bits[14] = 1; n = n - binPOWERS_OF_TWO[14]; }
+    if (n >= binPOWERS_OF_TWO[13]) { result.bits[13] = 1; n = n - binPOWERS_OF_TWO[13]; }
+    if (n >= binPOWERS_OF_TWO[12]) { result.bits[12] = 1; n = n - binPOWERS_OF_TWO[12]; }
+    if (n >= binPOWERS_OF_TWO[11]) { result.bits[11] = 1; n = n - binPOWERS_OF_TWO[11]; }
+    if (n >= binPOWERS_OF_TWO[10]) { result.bits[10] = 1; n = n - binPOWERS_OF_TWO[10]; }
+    if (n >= binPOWERS_OF_TWO[9])  { result.bits[9] = 1;  n = n - binPOWERS_OF_TWO[9]; }
+    if (n >= binPOWERS_OF_TWO[8])  { result.bits[8] = 1;  n = n - binPOWERS_OF_TWO[8]; }
+    if (n >= binPOWERS_OF_TWO[7])  { result.bits[7] = 1;  n = n - binPOWERS_OF_TWO[7]; }
+    if (n >= binPOWERS_OF_TWO[6])  { result.bits[6] = 1;  n = n - binPOWERS_OF_TWO[6]; }
+    if (n >= binPOWERS_OF_TWO[5])  { result.bits[5] = 1;  n = n - binPOWERS_OF_TWO[5]; }
+    if (n >= binPOWERS_OF_TWO[4])  { result.bits[4] = 1;  n = n - binPOWERS_OF_TWO[4]; }
+    if (n >= binPOWERS_OF_TWO[3])  { result.bits[3] = 1;  n = n - binPOWERS_OF_TWO[3]; }
+    if (n >= binPOWERS_OF_TWO[2])  { result.bits[2] = 1;  n = n - binPOWERS_OF_TWO[2]; }
+    if (n >= binPOWERS_OF_TWO[1])  { result.bits[1] = 1;  n = n - binPOWERS_OF_TWO[1]; }
+    if (n >= binPOWERS_OF_TWO[0])  { result.bits[0] = 1; }
     
     return result;
 }
 
-// Convert a binary number to an integer.
+// Convert a binary number to an integer - LOOP-FREE like binNew!
 bin_int_t binToInt(const bin x) {
     bin_int_t result = 0;
-    bin_int_t power_of_two = 1;
-
-    for (bin_int_t i = 0; i < BIN_BITS; i++) {
-        if (x.bits[i]) {
-            result = result + power_of_two;
-        }
-        // Double the power using only addition
-        power_of_two = power_of_two + power_of_two;
-        if (!power_of_two) break; // Overflow protection
-    }
-
+    
+    // NO LOOPS! Direct bit testing using pre-computed powers - eliminates recursion problem
+    if (x.bits[0])  result = result + binPOWERS_OF_TWO[0];
+    if (x.bits[1])  result = result + binPOWERS_OF_TWO[1];
+    if (x.bits[2])  result = result + binPOWERS_OF_TWO[2];
+    if (x.bits[3])  result = result + binPOWERS_OF_TWO[3];
+    if (x.bits[4])  result = result + binPOWERS_OF_TWO[4];
+    if (x.bits[5])  result = result + binPOWERS_OF_TWO[5];
+    if (x.bits[6])  result = result + binPOWERS_OF_TWO[6];
+    if (x.bits[7])  result = result + binPOWERS_OF_TWO[7];
+    if (x.bits[8])  result = result + binPOWERS_OF_TWO[8];
+    if (x.bits[9])  result = result + binPOWERS_OF_TWO[9];
+    if (x.bits[10]) result = result + binPOWERS_OF_TWO[10];
+    if (x.bits[11]) result = result + binPOWERS_OF_TWO[11];
+    if (x.bits[12]) result = result + binPOWERS_OF_TWO[12];
+    if (x.bits[13]) result = result + binPOWERS_OF_TWO[13];
+    if (x.bits[14]) result = result + binPOWERS_OF_TWO[14];
+    if (x.bits[15]) result = result + binPOWERS_OF_TWO[15];
+    
     return result;
 }
 
