@@ -150,15 +150,14 @@ void finalizeJunitXml(void) {
 
 // Global variable to track if we're currently timing a test
 static int currently_timing_test = 0;
+static double current_test_duration = 0.0;
 
 // Run a test function with proper timing
 void runTimedTest(const char* testName, void (*testFunction)(void)) {
     currently_timing_test = 1;
     
-    // Start timing
-    if (junit_enabled) {
-        current_test_start = clock();
-    }
+    // Start timing - always capture timing, not just for JUnit
+    current_test_start = clock();
     
     // Save the current test results state
     bin_int_t old_results = bin_testResults;
@@ -169,12 +168,15 @@ void runTimedTest(const char* testName, void (*testFunction)(void)) {
     // Calculate if this specific test passed (compare before/after state)
     bin_int_t test_passed = (bin_testResults == old_results) ? old_results : bin_testResults;
     
-    // Calculate test duration
+    // Calculate test duration - always calculate
     double duration = 0.0;
-    if (junit_enabled && current_test_start != 0) {
+    if (current_test_start != 0) {
         clock_t end_time = clock();
         duration = ((double)(end_time - current_test_start)) / CLOCKS_PER_SEC;
     }
+    
+    // Store duration for console display
+    current_test_duration = duration;
     
     // Record the result with timing
     if (junit_enabled && test_count < MAX_TESTS) {
@@ -193,8 +195,35 @@ void processTestResults(const char* testName, const bin_int_t results) {
     bin_testResults &= results;
     const char* color  = results ? CC_GREEN : CC_RED;
     const char* text   = results ? "pass" : "fail";
-    const char* format = "\tTesting - %-30s: %s%s%s\n";
-    printf(format, testName, color, text, CC_RESET);
+    
+    // Show timing if available (from runTimedTest)
+    if (currently_timing_test) {
+        // Use appropriate time units based on duration
+        if (current_test_duration >= 1.0) {
+            // >= 1 second: show seconds
+            const char* format = "\tTesting - %-30s: %s%s%s (%.3fs)\n";
+            printf(format, testName, color, text, CC_RESET, current_test_duration);
+        } else if (current_test_duration >= 0.001) {
+            // >= 1 millisecond: show milliseconds
+            const char* format = "\tTesting - %-30s: %s%s%s (%.3fms)\n";
+            printf(format, testName, color, text, CC_RESET, current_test_duration * 1000.0);
+        } else if (current_test_duration >= 0.000001) {
+            // >= 1 microsecond: show microseconds
+            const char* format = "\tTesting - %-30s: %s%s%s (%.1fµs)\n";
+            printf(format, testName, color, text, CC_RESET, current_test_duration * 1000000.0);
+        } else if (current_test_duration > 0.0) {
+            // < 1 microsecond but > 0: show nanoseconds
+            const char* format = "\tTesting - %-30s: %s%s%s (%.0fns)\n";
+            printf(format, testName, color, text, CC_RESET, current_test_duration * 1000000000.0);
+        } else {
+            // 0 duration (below clock resolution): show estimate
+            const char* format = "\tTesting - %-30s: %s%s%s (<1µs)\n";
+            printf(format, testName, color, text, CC_RESET);
+        }
+    } else {
+        const char* format = "\tTesting - %-30s: %s%s%s\n";
+        printf(format, testName, color, text, CC_RESET);
+    }
     fflush(stdout);
     
     // Only record for JUnit XML if we're not already timing this test

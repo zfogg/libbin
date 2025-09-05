@@ -224,7 +224,7 @@ $(BIN_D):
 # =============================================================================
 
 $(TARGET): $(OBJECTS) | $(OUT_D)
-	$(CC) $(CFLAGS) $(LDFLAGS_SHARED) $^ -o $@
+	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $(LDFLAGS_SHARED) $^ -o $@
 
 $(TARGET_DEBUG): $(patsubst $(SRC_D)/%.c, $(OUT_D)/%-debug.o, $(SOURCES)) | $(OUT_D)
 	$(CC) $(CFLAGS) $(DEBUG_FLAGS) $(CFLAGS_SHARED) $(LDFLAGS_SHARED) $^ -o $@
@@ -246,7 +246,7 @@ $(TARGET_UBSAN): $(patsubst $(SRC_D)/%.c, $(OUT_D)/%-ubsan.o, $(SOURCES)) | $(OU
 # =============================================================================
 
 $(TESTS): $(TEST_OBJECTS) $(TARGET) | $(BIN_D)
-	$(CC) $(CFLAGS) $(TEST_OBJECTS) -o $@ $(LDFLAGS_TEST) -l$(T)
+	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $(TEST_OBJECTS) -o $@ $(LDFLAGS_TEST) -l$(T)
 
 $(TESTS_DEBUG): $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-debug.o, $(TEST_SOURCES)) $(TARGET_DEBUG) | $(BIN_D)
 	$(CC) $(CFLAGS) $(DEBUG_FLAGS) $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-debug.o, $(TEST_SOURCES)) -o $@ $(LDFLAGS_TEST) $(TARGET_DEBUG)
@@ -269,11 +269,11 @@ $(TESTS_RELEASE): $(patsubst $(TEST_D)/%.c, $(OUT_D)/%-release.o, $(TEST_SOURCES
 
 # Object files for library
 $(OBJECTS): $(OUT_D)/%.o: $(SRC_D)/%.c $(HEADERS) | $(OUT_D)
-	$(CC) $(CFLAGS) $(CFLAGS_SHARED) -c $< -o $@
+	$(CC) $(CFLAGS) $(RELEASE_FLAGS) $(CFLAGS_SHARED) -c $< -o $@
 
 # Object files for tests
 $(TEST_OBJECTS): $(OUT_D)/%.o: $(TEST_D)/%.c $(TEST_HEADERS) | $(OUT_D)
-	$(CC) $(CFLAGS) $(CFLAGS_SHARED) -c $< -o $@
+	$(CC) $(CFLAGS) $(RELEASE_FLAGS) -c $< -o $@
 
 # Debug object files
 $(OUT_D)/%-debug.o: $(SRC_D)/%.c $(HEADERS) | $(OUT_D)
