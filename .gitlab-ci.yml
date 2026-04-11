@@ -1,0 +1,295 @@
+# GitLab CI/CD Pipeline for libbin
+# A comprehensive pipeline that builds, tests, analyzes, and deploys the library
+
+stages:
+  - build
+  - test
+  - analyze
+  - coverage
+  - deploy
+
+variables:
+  # Use clang as the primary compiler
+  CC: "clang"
+  # C standard
+  CSTD: "c23"
+
+# =============================================================================
+# Build Stage
+# =============================================================================
+
+build:default:
+  stage: build
+  image: debian:bookworm
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq build-essential clang llvm
+  script:
+    - make clean
+    - make default
+  artifacts:
+    paths:
+      - build/lib*.so
+      - bin/
+    expire_in: 1 hour
+    name: "libbin-build-${CI_COMMIT_SHORT_SHA}"
+
+build:debug:
+  stage: build
+  image: debian:bookworm
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq build-essential clang llvm
+  script:
+    - make clean
+    - make debug
+  artifacts:
+    paths:
+      - build/lib*_debug.so
+    expire_in: 1 hour
+    name: "libbin-debug-${CI_COMMIT_SHORT_SHA}"
+
+build:release:
+  stage: build
+  image: debian:bookworm
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq build-essential clang llvm
+  script:
+    - make clean
+    - make release
+  artifacts:
+    paths:
+      - build/lib*_release.so
+    expire_in: 1 hour
+    name: "libbin-release-${CI_COMMIT_SHORT_SHA}"
+
+# =============================================================================
+# Test Stage
+# =============================================================================
+
+test:unit:
+  stage: test
+  image: debian:bookworm
+  dependencies:
+    - build:default
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq build-essential clang llvm
+  script:
+    - make test
+  artifacts:
+    reports:
+      junit: test_results.xml
+    paths:
+      - bin/bin_tests
+    expire_in: 1 week
+    name: "libbin-unit-tests-${CI_COMMIT_SHORT_SHA}"
+
+test:debug:
+  stage: test
+  image: debian:bookworm
+  dependencies:
+    - build:debug
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq build-essential clang llvm
+  script:
+    - make test-debug
+  artifacts:
+    paths:
+      - bin/bin_tests_debug
+    expire_in: 1 week
+
+test:release:
+  stage: test
+  image: debian:bookworm
+  dependencies:
+    - build:release
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq build-essential clang llvm
+  script:
+    - make test-release
+  artifacts:
+    paths:
+      - bin/bin_tests_release
+    expire_in: 1 week
+
+test:asan:
+  stage: test
+  image: debian:bookworm
+  dependencies:
+    - build:default
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq build-essential clang llvm
+  script:
+    - make clean
+    - make test-asan
+  allow_failure: true
+  artifacts:
+    paths:
+      - bin/bin_tests_asan
+    expire_in: 1 week
+
+test:ubsan:
+  stage: test
+  image: debian:bookworm
+  dependencies:
+    - build:default
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq build-essential clang llvm
+  script:
+    - make clean
+    - make test-ubsan
+  allow_failure: true
+  artifacts:
+    paths:
+      - bin/bin_tests_ubsan
+    expire_in: 1 week
+
+# =============================================================================
+# Analysis Stage
+# =============================================================================
+
+analyze:clang-tidy:
+  stage: analyze
+  image: debian:bookworm
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq build-essential clang clang-tools llvm
+  script:
+    - make check-tidy
+  allow_failure: true
+  artifacts:
+    reports:
+      sast: sast-report.json
+    expire_in: 1 week
+
+analyze:cppcheck:
+  stage: analyze
+  image: debian:bookworm
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq cppcheck clang
+  script:
+    - make check-cppcheck
+  allow_failure: true
+  artifacts:
+    expire_in: 1 week
+
+# =============================================================================
+# Coverage Stage
+# =============================================================================
+
+coverage:generate:
+  stage: coverage
+  image: debian:bookworm
+  dependencies:
+    - build:default
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq build-essential clang llvm llvm-tools
+  script:
+    - make clean
+    - make test-coverage
+    - make coverage
+  coverage: '/Lines executed:(\d+\.\d+)%/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage_report.xml
+    paths:
+      - build/*.gcov
+      - bin/bin_tests_coverage
+    expire_in: 30 days
+    name: "libbin-coverage-${CI_COMMIT_SHORT_SHA}"
+  allow_failure: true
+
+# =============================================================================
+# Deploy Stage
+# =============================================================================
+
+deploy:artifacts:
+  stage: deploy
+  image: debian:bookworm
+  dependencies:
+    - build:default
+    - build:debug
+    - build:release
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq curl
+  script:
+    - echo "Deploying artifacts to GitLab"
+    - ls -lah build/
+    - echo "Artifacts ready for distribution"
+  artifacts:
+    paths:
+      - build/lib*.so
+    name: "${CI_PROJECT_NAME}-${CI_COMMIT_SHORT_SHA}"
+    expire_in: 30 days
+  only:
+    - master
+    - tags
+
+deploy:release:
+  stage: deploy
+  image: debian:bookworm
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq curl git
+    # Install glab CLI
+    - curl -L https://gitlab.com/gitlab-org/cli/-/releases/latest/downloads/glab_linux_amd64.tar.gz | tar xz -C /usr/local/bin/
+  script:
+    - echo "Preparing release with glab CLI"
+    - glab --version
+    - |
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        echo "Creating release for tag: $CI_COMMIT_TAG"
+        glab release create "$CI_COMMIT_TAG" \
+          --title "Release $CI_COMMIT_TAG" \
+          --description "Automated release build for libbin" \
+          --milestone "$CI_COMMIT_TAG" || true
+      fi
+  only:
+    - tags
+  allow_failure: true
+
+deploy:test-glab:
+  stage: deploy
+  image: debian:bookworm
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y -qq curl git
+    # Install glab CLI
+    - curl -L https://gitlab.com/gitlab-org/cli/-/releases/latest/downloads/glab_linux_amd64.tar.gz | tar xz -C /usr/local/bin/
+  script:
+    - echo "Testing glab CLI integration"
+    - glab --version
+    - glab config get host || echo "No glab configuration found (expected in non-interactive CI)"
+    - echo "Pipeline details:"
+    - glab api projects/get --path-expand id,name,web_url || true
+    - echo "glab CLI is properly installed and available"
+  allow_failure: false
+  only:
+    - master
+    - tags
+
+# =============================================================================
+# Workflow Configuration
+# =============================================================================
+
+workflow:
+  rules:
+    # Run pipeline for merge requests
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    # Run pipeline for commits to protected branches
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_PROTECTED'
+    # Run pipeline for tags
+    - if: '$CI_COMMIT_TAG'
+    # Run pipeline for commits to master
+    - if: '$CI_COMMIT_BRANCH == "master"'
