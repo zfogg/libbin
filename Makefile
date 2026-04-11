@@ -203,8 +203,8 @@ check-cppcheck:
 
 # Coverage report
 coverage: test-coverage
-	@echo "Generating coverage report..."
-	llvm-cov gcov -r build/*-coverage.gcno || gcov -r $(OUT_D)/*-coverage.gcno
+	@echo "Generating coverage report with llvm-cov..."
+	llvm-cov gcov -r build/*-coverage.gcno
 	@echo "Coverage files generated in build/ directory."
 	@echo "Summary:"
 	@grep -h "Lines executed" $(OUT_D)/*.gcov | grep -v "test" || true
