@@ -50,7 +50,7 @@ DEBUG_FLAGS    := -O0 -g3 -DDEBUG -Wpedantic -Wconversion -Wshadow \
                   -Wnested-externs -Winline -Wvla -fstack-protector-strong \
                   -D_FORTIFY_SOURCE=2 -fno-omit-frame-pointer
 
-RELEASE_FLAGS  := -O3 -DNDEBUG -march=native -funroll-loops -ffast-math
+RELEASE_FLAGS  := -O3 -DNDEBUG -march=x86-64 -funroll-loops -ffast-math
 COVERAGE_FLAGS := $(DEBUG_FLAGS) --coverage
 ASAN_FLAGS     := $(DEBUG_FLAGS) -fsanitize=address -fno-omit-frame-pointer
 UBSAN_FLAGS    := $(DEBUG_FLAGS) -fsanitize=undefined -fno-omit-frame-pointer
