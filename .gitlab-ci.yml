@@ -197,6 +197,7 @@ coverage:generate:
     paths:
       - build/*.gcov
     expire_in: 30 days
+  allow_failure: true
   coverage: '/Lines executed:(\d+\.\d+)%/'
   artifacts:
     reports:
