@@ -191,11 +191,19 @@ coverage:generate:
     - build:default
   before_script:
     - apt-get update -qq
-    - apt-get install -y -qq build-essential clang llvm llvm-tools
+    - apt-get install -y -qq build-essential clang llvm llvm-tools gcov
   script:
     - make clean
     - CFLAGS="-march=x86-64" make test-coverage
     - make coverage
+    - mkdir -p coverage_report
+    - find build -name "*.gcov" -exec cp {} coverage_report/ \;
+    - echo "Coverage report generated"
+  artifacts:
+    paths:
+      - coverage_report/
+      - build/*.gcov
+    expire_in: 30 days
   coverage: '/Lines executed:(\d+\.\d+)%/'
   artifacts:
     reports:
