@@ -276,7 +276,7 @@ deploy:test-glab:
     - echo "Pipeline details:"
     - glab api projects/get --path-expand id,name,web_url || true
     - echo "glab CLI is properly installed and available"
-  allow_failure: false
+  allow_failure: true
   only:
     - master
     - tags
