@@ -37,8 +37,8 @@ bin binIncrement(const bin x);
  * @param y The binary number to subtract (subtrahend)
  * @return The difference of x and y as a binary number (x - y)
  *
- * @note This function performs standard binary subtraction with borrow handling.
- *       If y > x, the result will be the two's complement representation.
+ * @note This function performs standard binary subtraction with borrow
+ * handling. If y > x, the result will be the two's complement representation.
  */
 bin binSubtract(const bin x, const bin y);
 
@@ -113,7 +113,8 @@ bin binPow(const bin x, const bin y);
  * @param x The binary number to calculate the square root of
  * @return The square root of x as a binary number
  *
- * @note This function implements the Newton-Raphson method for square root calculation.
+ * @note This function implements the Newton-Raphson method for square root
+ * calculation.
  */
 bin binSqrt(const bin x);
 
